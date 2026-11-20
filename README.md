@@ -33,7 +33,7 @@ XiaodouNotify/
 │   └── util/                  # 权限、应用锁、Pro、主题、偏好等工具
 ├── app/src/main/res/
 │   ├── layout/                # 仅基础通知页面（无成就布局）
-│   ├── menu/bottom_nav_menu.xml  # 四个入口，无 nav_achievements
+│   ├── menu/bottom_nav_menu.xml  # 四个入口，无成就入口
 │   └── values/                # 应用名「小豆通知」，无成就字符串
 ├── app/build.gradle.kts       # applicationId=com.xiaodou.notify，versionCode=1
 └── README.md
