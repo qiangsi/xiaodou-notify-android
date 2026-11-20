@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- 小豆荚：豆荚弧线 + 三粒豆，品牌意象 -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M34,60c0,-17 14,-28 32,-24c13,3 19,13 13,24c-6,11 -21,15 -32,8c-6,-4 -11,-6 -13,-8z"
+        android:strokeColor="#F6F1E6" android:strokeWidth="3.4"
+        android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:fillColor="#F6F1E6" android:pathData="M39.6,52a6.4,6.4 0 1,0 12.8,0a6.4,6.4 0 1,0 -12.8,0" />
+    <path android:fillColor="#F6F1E6" android:pathData="M55.6,55a6.4,6.4 0 1,0 12.8,0a6.4,6.4 0 1,0 -12.8,0" />
+    <path android:fillColor="#F6F1E6" android:pathData="M48.8,68a6.2,6.2 0 1,0 12.4,0a6.2,6.2 0 1,0 -12.4,0" />
+</vector>

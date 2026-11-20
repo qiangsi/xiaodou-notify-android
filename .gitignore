@@ -1,0 +1,25 @@
+*.iml
+.gradle/
+.kotlin/
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+*.apk
+*.aab
+*.idsig
+*.jks
+*.keystore
+*.enc
+/build.log
+/wrapper.log
+app/build/
+app/release/
+
+# v1.6.1 PRO 闭源资产：绝不入库
+# 授权密钥密文放 local.properties；签发脚本与社区占位实现放工程外层 .publish/
+local.properties

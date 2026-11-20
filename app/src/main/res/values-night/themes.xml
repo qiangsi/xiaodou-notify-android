@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      深色模式不再重复定义主题：values/themes.xml 使用 DayNight 父主题，
+      所有差异由 values-night/colors.xml 与 values-night/bools.xml 提供，
+      避免两套主题定义漂移造成样式冲突。
+    -->
+</resources>

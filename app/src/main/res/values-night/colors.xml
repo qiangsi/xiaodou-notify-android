@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============ 语义色：深色主题（覆盖全部浅色令牌，避免残留浅色方块/深字） ============ -->
+    <color name="background">#101720</color>
+    <color name="surface">#18212C</color>
+    <color name="surface_alt">#212B38</color>
+    <color name="text_primary">#E9EEF6</color>
+    <color name="text_secondary">#A3AEBE</color>
+    <color name="text_tertiary">#7A8698</color>
+    <color name="divider">#26303D</color>
+    <color name="outline">#313D4C</color>
+    <color name="card_stroke">#263140</color>
+
+    <!-- ============ 品牌色：经典蓝（深色下提高亮度保证对比度） ============ -->
+    <color name="primary">#A9C6FF</color>
+    <color name="primary_dark">#6E93D8</color>
+    <color name="primary_light">#23345A</color>
+    <color name="primary_container">#23345A</color>
+    <color name="on_primary">#101B30</color>
+    <color name="on_primary_container">#C6D9FF</color>
+    <color name="accent">#F0B18F</color>
+    <color name="accent_container">#4A3125</color>
+    <color name="on_accent">#2A170E</color>
+    <color name="on_accent_container">#F4C5A8</color>
+
+    <!-- ============ 状态色 ============ -->
+    <color name="badge_kept_bg">#1E3A2D</color>
+    <color name="badge_kept_text">#86D6AA</color>
+    <color name="badge_filtered_bg">#402629</color>
+    <color name="badge_filtered_text">#FFA29B</color>
+    <color name="score_high">#FF8F87</color>
+    <color name="score_mid">#F5B971</color>
+    <color name="score_low">#7BD3A0</color>
+
+    <!-- ============ 可选配色：青绿 ============ -->
+    <color name="theme_teal_primary">#7FD8CF</color>
+    <color name="theme_teal_dark">#4AA9A0</color>
+    <color name="theme_teal_light">#173B39</color>
+    <color name="theme_teal_accent">#F0B18F</color>
+    <!-- ============ 可选配色：紫罗兰 ============ -->
+    <color name="theme_purple_primary">#C4A9FF</color>
+    <color name="theme_purple_dark">#9B78DC</color>
+    <color name="theme_purple_light">#2E2544</color>
+    <color name="theme_purple_accent">#F2A7C2</color>
+    <!-- ============ 可选配色：珊瑚橙 ============ -->
+    <color name="theme_coral_primary">#F2A883</color>
+    <color name="theme_coral_dark">#C97B55</color>
+    <color name="theme_coral_light">#42291F</color>
+    <color name="theme_coral_accent">#A9C6FF</color>
+
+    <!-- ============ 可选配色：燕麦（低饱和大地色，深色提亮） ============ -->
+    <color name="theme_oat_primary">#D6B894</color>
+    <color name="theme_oat_dark">#B08C68</color>
+    <color name="theme_oat_light">#3E3125</color>
+    <color name="theme_oat_accent">#9CC4B2</color>
+    <!-- ============ 可选配色：藕荷（雅致灰粉，深色提亮） ============ -->
+    <color name="theme_lotus_primary">#DBAEC0</color>
+    <color name="theme_lotus_dark">#B6859A</color>
+    <color name="theme_lotus_light">#3E2C36</color>
+    <color name="theme_lotus_accent">#A8C9C1</color>
+    <!-- ============ 可选配色：藏青（沉稳蓝灰，深色提亮） ============ -->
+    <color name="theme_navy_primary">#A9BEE0</color>
+    <color name="theme_navy_dark">#8499BF</color>
+    <color name="theme_navy_light">#26344E</color>
+    <color name="theme_navy_accent">#D4B27E</color>
+
+    <!-- ============ 桌面小部件深色 ============ -->
+    <color name="widget_bg">#18212C</color>
+    <color name="widget_text">#E9EEF6</color>
+    <color name="widget_subtext">#A3AEBE</color>
+    <color name="widget_accent">#A9C6FF</color>
+    <color name="widget_surface_alt">#212B38</color>
+    <color name="widget_outline">#313D4C</color>
+
+    <!-- FAB 固定使用较深底色，保证白色图标在深浅模式下对比度一致 -->
+    <color name="fab_bg">#3F6CB4</color>
+    <color name="switch_off">#3B4757</color>
+    <!-- 次级可点击文字（深色） -->
+    <color name="text_link">#A9C6FF</color>
+</resources>

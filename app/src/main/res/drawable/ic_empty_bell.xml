@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp" android:height="96dp"
+    android:viewportWidth="96" android:viewportHeight="96">
+    <!-- 柔和圆形底 -->
+    <path
+        android:fillColor="@color/primary_container"
+        android:pathData="M48,48m-42,0a42,42 0 1,0 84,0a42,42 0 1,0 -84,0" />
+    <!-- 铃铛主体 -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M48,25.5a13,13 0 0,1 13,13v8.8l3.5,6a2,2 0 0,1 -1.7,3H33.2a2,2 0 0,1 -1.7,-3l3.5,-6v-8.8A13,13 0 0,1 48,25.5z"
+        android:strokeColor="?attr/colorPrimary"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M42.4,60.5a5.6,5.6 0 0,0 11.2,0"
+        android:strokeColor="?attr/colorPrimary"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round" />
+    <!-- 顶部信号弧：表达“正在接收通知” -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M59.5,38.5a12.5,12.5 0 0,1 0,13"
+        android:strokeColor="?attr/colorPrimary"
+        android:strokeAlpha="0.45"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+</vector>

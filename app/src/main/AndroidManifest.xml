@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Webhook 转发所需：此前缺失导致所有网络转发静默失败 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 通知发出/恢复（Android 13+ 运行时权限） -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- 开机自启，恢复监听 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 前台服务保活（Android 14+ 专用权限） -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 用户主动加入电池优化白名单，降低后台被清理概率 -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- 查询已安装应用，用于 App 选择器（Google Play 需声明用途） -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
+    <application
+        android:name=".XiaodouApp"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.XiaodouNotify">
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- v1.5.0 可切换桌面图标：5 个别名各带一个图标，同一时刻只启用一个。
+             Prefs.launcherIcon 记录选择，IconHelper 负责 enable 目标 / disable 其余。
+             注意：MainActivity 本身不挂 LAUNCHER，避免出现重复图标。 -->
+        <activity-alias
+            android:name=".ui.MainActivityAliasClassic"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:targetActivity=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.MainActivityAliasBell"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_bell"
+            android:roundIcon="@mipmap/ic_launcher_bell"
+            android:label="@string/app_name"
+            android:targetActivity=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.MainActivityAliasPod"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_pod"
+            android:roundIcon="@mipmap/ic_launcher_pod"
+            android:label="@string/app_name"
+            android:targetActivity=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.MainActivityAliasFunnel"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_funnel"
+            android:roundIcon="@mipmap/ic_launcher_funnel"
+            android:label="@string/app_name"
+            android:targetActivity=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.MainActivityAliasMail"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_mail"
+            android:roundIcon="@mipmap/ic_launcher_mail"
+            android:label="@string/app_name"
+            android:targetActivity=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity android:name=".ui.RuleEditActivity" android:exported="false" />
+        <activity android:name=".ui.NotificationDetailActivity" android:exported="false" />
+        <activity android:name=".ui.DiagnosticActivity" android:exported="false" />
+        <activity android:name=".ui.CodeVaultActivity" android:exported="false" />
+
+        <!-- 通知监听服务：产品技术底座 -->
+        <service
+            android:name=".listener.NotificationMonitorService"
+            android:exported="true"
+            android:label="@string/notification_service_label"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+            <!--
+              通知类型过滤器：官方要求用竖线 | 分隔，且只接受 4 个合法值
+              (conversations/alerting/silent/ongoing)。
+              v1.4.2 之前误用逗号并塞入 vocal/important/progress 等非法值，
+              AOSP 按竖线解析后得到空列表 → "allow no types" → 一条通知都收不到。
+              v1.4.3 修正为全部 4 种合法类型（等价于允许全部）。
+            -->
+            <meta-data
+                android:name="android.service.notification.default_filter_types"
+                android:value="conversations|alerting|silent|ongoing" />
+        </service>
+
+        <!-- 保活前台服务 -->
+        <service
+            android:name=".listener.KeepAliveService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="notification_listener_keep_alive" />
+        </service>
+
+        <!-- 保活看门狗：周期性检查并恢复前台服务 -->
+        <service
+            android:name=".listener.KeepAliveJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver
+            android:name=".listener.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".listener.UndoReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".listener.CodeCopyReceiver"
+            android:exported="false" />
+
+        <!-- FR-E4 桌面小部件 -->
+        <receiver
+            android:name=".listener.XiaodouWidgetProvider"
+            android:exported="false"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.xiaodou.notify.widget.TOGGLE" />
+                <action android:name="com.xiaodou.notify.widget.REFRESH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+</manifest>

@@ -1,0 +1,139 @@
+package com.xiaodou.notify.ui
+
+import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.xiaodou.notify.R
+import com.xiaodou.notify.data.CryptoHelper
+import com.xiaodou.notify.data.NotificationEntity
+import com.xiaodou.notify.data.Result
+import com.xiaodou.notify.databinding.ItemNotificationBinding
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+
+/** 时间轴列表项：日期分隔头 或 通知 */
+sealed class TimelineItem {
+    data class Header(val label: String, val key: String) : TimelineItem()
+    data class Entry(val entity: NotificationEntity) : TimelineItem()
+}
+
+class NotificationAdapter(
+    private val onClick: (NotificationEntity) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var items: List<TimelineItem> = emptyList()
+    private val iconCache = HashMap<String, Drawable?>()
+
+    companion object {
+        private const val TYPE_HEADER = 0
+        private const val TYPE_ENTRY = 1
+    }
+
+    class HeaderVH(val view: View) : RecyclerView.ViewHolder(view) {
+        val tvDate: TextView = view.findViewById(R.id.tv_date)
+    }
+    class EntryVH(val binding: ItemNotificationBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun getItemViewType(position: Int) = when (items[position]) {
+        is TimelineItem.Header -> TYPE_HEADER
+        is TimelineItem.Entry -> TYPE_ENTRY
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_HEADER) {
+            HeaderVH(LayoutInflater.from(parent.context).inflate(R.layout.item_date_header, parent, false))
+        } else {
+            EntryVH(ItemNotificationBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = items[position]) {
+            is TimelineItem.Header -> (holder as HeaderVH).tvDate.text = item.label
+            is TimelineItem.Entry -> bindEntry((holder as EntryVH), item.entity)
+        }
+    }
+
+    override fun getItemCount() = items.size
+
+    private fun bindEntry(holder: EntryVH, item: NotificationEntity) {
+        val b = holder.binding
+        b.tvApp.text = item.appName
+        b.tvTime.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(item.timestamp))
+        b.tvTitle.text = CryptoHelper.decrypt(item.titleEnc)
+        b.tvText.text = CryptoHelper.decrypt(item.textEnc)
+
+        val filtered = item.result != Result.KEPT
+        b.tvBadge.setText(if (filtered) R.string.badge_filtered else R.string.badge_kept)
+        b.tvBadge.setBackgroundResource(if (filtered) R.drawable.bg_badge_filtered else R.drawable.bg_badge_kept)
+        b.tvBadge.setTextColor(b.root.context.getColor(if (filtered) R.color.badge_filtered_text else R.color.badge_kept_text))
+        b.tvReason.text = item.filterReason ?: ""
+
+        if (item.score > 0 && !filtered) {
+            b.tvScore.text = "骚扰 ${item.score}%"
+            b.tvScore.setTextColor(b.root.context.getColor(if (item.score >= 70) R.color.score_high else if (item.score >= 40) R.color.score_mid else R.color.score_low))
+        } else {
+            b.tvScore.text = ""
+        }
+        b.root.setOnClickListener { onClick(item) }
+        bindAppIcon(b, item.packageName)
+    }
+
+    /** 应用图标：缓存避免滚动时重复查询 PackageManager；取不到时回退到通用铃铛。 */
+    private fun bindAppIcon(b: ItemNotificationBinding, pkg: String) {
+        val ctx = b.root.context
+        val icon: Drawable? = iconCache.getOrPut(pkg) {
+            try {
+                ctx.packageManager.getApplicationIcon(pkg)
+            } catch (e: Exception) {
+                null
+            }
+        }
+        if (icon != null) {
+            b.ivAppIcon.setPadding(0, 0, 0, 0)
+            b.ivAppIcon.imageTintList = null
+            b.ivAppIcon.setImageDrawable(icon)
+        } else {
+            val p = (8 * ctx.resources.displayMetrics.density).toInt()
+            b.ivAppIcon.setPadding(p, p, p, p)
+            b.ivAppIcon.setImageResource(R.drawable.ic_bell)
+            b.ivAppIcon.imageTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(ctx, R.color.text_tertiary)
+            )
+        }
+    }
+
+    /**
+     * 按日期分组。list 需按时间倒序；组内按当日时间正序渲染（PRD FR-H3）。
+     * @param groupByDay true=插入日期头；false=平铺（用于单日筛选结果）
+     */
+    fun submitList(list: List<NotificationEntity>, groupByDay: Boolean = true) {
+        val dayKey = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dayLabel = SimpleDateFormat("yyyy年M月d日", Locale.getDefault())
+        val result = mutableListOf<TimelineItem>()
+        if (!groupByDay) {
+            list.forEach { result += TimelineItem.Entry(it) }
+        } else {
+            // list 已按时间倒序；先按天分组（保持天的倒序），组内再正序
+            val byDay = LinkedHashMap<String, MutableList<NotificationEntity>>()
+            list.forEach { e ->
+                val k = dayKey.format(Date(e.timestamp))
+                byDay.getOrPut(k) { mutableListOf() }.add(e)
+            }
+            byDay.forEach { (k, entries) ->
+                result += TimelineItem.Header(dayLabel.format(Date(entries.first().timestamp)), k)
+                // v1.6.0：组内也按时间倒序，最新的通知排在最上面（整页彻底倒叙）
+                entries.sortedByDescending { it.timestamp }.forEach { result += TimelineItem.Entry(it) }
+            }
+        }
+        items = result
+        notifyDataSetChanged()
+    }
+}

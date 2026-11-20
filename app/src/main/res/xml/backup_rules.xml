@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- 通知含隐私，禁止备份 -->
+    <exclude domain="database" path="xiaodou.db" />
+    <exclude domain="sharedpref" path="xiaodou_prefs.xml" />
+</full-backup-content>

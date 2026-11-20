@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- 过滤漏斗：表达"拦下骚扰、留下重要" -->
+    <path
+        android:fillColor="#F6F4EC"
+        android:pathData="M35,36h38l-15,18v15l-8,4V54L35,36z" />
+    <path android:fillColor="#D4B27E" android:pathData="M49.6,80a4.4,4.4 0 1,0 8.8,0a4.4,4.4 0 1,0 -8.8,0" />
+</vector>

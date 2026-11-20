@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============ 间距令牌（4 的倍数，统一留白节奏） ============ -->
+    <dimen name="space_xxs">2dp</dimen>
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_s">8dp</dimen>
+    <dimen name="space_m">12dp</dimen>
+    <dimen name="space_l">16dp</dimen>
+    <dimen name="space_xl">20dp</dimen>
+    <dimen name="space_xxl">24dp</dimen>
+    <dimen name="space_huge">32dp</dimen>
+
+    <!-- ============ 圆角令牌 ============ -->
+    <dimen name="radius_xs">8dp</dimen>
+    <dimen name="radius_s">10dp</dimen>
+    <dimen name="radius_m">14dp</dimen>
+    <dimen name="radius_l">18dp</dimen>
+    <dimen name="radius_xl">22dp</dimen>
+
+    <!-- ============ 组件尺寸 ============ -->
+    <dimen name="page_padding">20dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="row_height">58dp</dimen>
+    <dimen name="field_height">46dp</dimen>
+    <dimen name="chip_height">34dp</dimen>
+    <dimen name="icon_tile">34dp</dimen>
+    <dimen name="icon_tile_padding">8dp</dimen>
+    <dimen name="nav_height">74dp</dimen>
+</resources>

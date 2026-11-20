@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">小豆通知</string>
+    <string name="notification_service_label">小豆通知 · 通知监听</string>
+
+    <!-- 底部导航 -->
+    <string name="tab_history">历史</string>
+    <string name="tab_rules">规则</string>
+    <string name="tab_stats">分析</string>
+    <string name="tab_settings">设置</string>
+
+
+    <!-- 通知渠道 -->
+    <string name="channel_restored">恢复的通知</string>
+    <string name="channel_keep_alive">监听保活</string>
+    <string name="channel_snoozed">推迟提醒</string>
+    <string name="channel_call_ui">来电式强提醒</string>
+
+    <!-- 通用 -->
+    <string name="action_cancel">取消</string>
+    <string name="action_save">保存</string>
+    <string name="action_delete">删除</string>
+    <string name="action_ok">确定</string>
+    <string name="empty_history">还没有通知记录\n授权通知使用权后，通知会自动出现在这里</string>
+    <string name="empty_rules">还没有规则，点右下角 + 创建</string>
+
+    <!-- 历史 -->
+    <string name="history_title">通知历史</string>
+    <string name="search_hint">搜索 App、标题或正文</string>
+    <string name="filter_all">全部</string>
+    <string name="filter_kept">已保留</string>
+    <string name="filter_filtered">已过滤</string>
+    <string name="filter_learned">已学习样本</string>
+    <string name="badge_kept">保留</string>
+    <string name="badge_filtered">已过滤</string>
+    <string name="restore_notification">恢复通知</string>
+    <string name="restored_toast">已恢复到通知栏</string>
+    <string name="delete_record">删除记录</string>
+    <string name="deleted_toast">已删除，可在设置中找回</string>
+
+    <!-- 详情 -->
+    <string name="detail_title">通知详情</string>
+    <string name="detail_source">来源应用</string>
+    <string name="detail_time">到达时间</string>
+    <string name="detail_result">处理结果</string>
+    <string name="detail_ai_score">骚扰概率</string>
+    <string name="detail_content">通知内容</string>
+    <string name="mark_spam">标记为骚扰</string>
+    <string name="mark_normal">标记为正常</string>
+    <string name="marked_toast">已标注，模型已更新</string>
+    <string name="recalled_notice">该消息已被发送方撤回/删除，此处为送达时的内容快照。</string>
+
+    <!-- 规则 -->
+    <string name="rules_title">过滤规则</string>
+    <string name="rule_edit_title">编辑规则</string>
+    <string name="rule_new_title">新建规则</string>
+    <string name="rule_name_hint">规则名称</string>
+    <string name="rule_apps">生效应用（不选=全部应用）</string>
+    <string name="rule_select_apps">选择应用</string>
+    <string name="rule_all_apps_hint">全部应用</string>
+    <string name="rule_keyword_include">包含任意关键词（逗号分隔）</string>
+    <string name="rule_keyword_exclude">排除关键词（逗号分隔）</string>
+    <string name="rule_time">生效时段（24小时制，如 18:00-09:00）</string>
+    <string name="rule_time_start">开始</string>
+    <string name="rule_time_end">结束</string>
+    <string name="rule_charging_only">仅充电时生效</string>
+    <string name="rule_screen_off_only">仅锁屏时生效</string>
+    <string name="rule_action">执行动作</string>
+    <string name="rule_action_param">动作参数（可选）</string>
+    <string name="rule_enabled">启用规则</string>
+    <string name="rule_test">测试规则</string>
+    <string name="rule_test_hint">输入测试文本</string>
+    <string name="rule_test_result">匹配结果</string>
+    <string name="rule_matched">命中</string>
+    <string name="rule_not_matched">未命中</string>
+    <string name="rule_delete_confirm">确定删除这条规则？</string>
+    <string name="rule_saved">规则已保存</string>
+
+    <!-- 动作名称 -->
+    <string name="act_dismiss">消除（不显示）</string>
+    <string name="act_mute">静音（无声无震动）</string>
+    <string name="act_snooze">推迟提醒</string>
+    <string name="act_replace">替换内容</string>
+    <string name="act_ringtone">更改铃声</string>
+    <string name="act_tts">语音朗读</string>
+    <string name="act_call_ui">来电式强提醒</string>
+    <string name="act_tap_button">点击按钮</string>
+    <string name="act_open">打开通知</string>
+    <string name="act_webhook">Webhook 转发</string>
+    <string name="act_keep">仅保留（不处理）</string>
+
+    <!-- 分析 -->
+    <string name="stats_title">通知分析</string>
+    <string name="stats_recent_7">近 7 天</string>
+    <string name="stats_recent_30">近 30 天</string>
+    <string name="stats_total">通知总数</string>
+    <string name="stats_filtered">已过滤</string>
+    <string name="stats_top_apps">打扰排行</string>
+    <string name="stats_daily">每日趋势</string>
+    <string name="stats_no_data">暂无数据</string>
+
+    <!-- 设置 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_permission">通知使用权</string>
+    <string name="settings_permission_status_on">已授权</string>
+    <string name="settings_permission_status_off">未授权 · 点此开启</string>
+    <string name="settings_permission_desc">小豆通知需要读取通知栏通知才能工作。请在系统设置中开启「通知使用权」。</string>
+    <string name="settings_post_notification">通知发送权限</string>
+    <string name="settings_ai">离线 AI 骚扰过滤</string>
+    <string name="settings_ai_desc">本地为每条通知打分，不上传任何内容</string>
+    <string name="settings_ai_threshold">过滤阈值</string>
+    <string name="settings_ai_threshold_value">骚扰概率 ≥ %1$d%% 自动过滤</string>
+    <string name="settings_enhance">通知增强</string>
+    <string name="settings_undo">5 秒撤销按钮</string>
+    <string name="settings_smart_mute">智能静音</string>
+    <string name="settings_code_copy">验证码提取</string>
+    <string name="settings_privacy">隐私与安全</string>
+    <string name="settings_encryption">本地加密存储（AES-GCM / Keystore）</string>
+    <string name="settings_encryption_on">已启用</string>
+    <string name="settings_export_csv">导出通知历史 (CSV)</string>
+    <string name="settings_clear_data">清空全部数据</string>
+    <string name="settings_clear_confirm">确定清空全部通知历史和 AI 标注？此操作不可恢复。</string>
+    <string name="settings_cleared">已清空</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_version">版本 1.6.0 · 数据仅存本机</string>
+    <string name="export_done">已导出到文档目录</string>
+    <string name="export_failed">导出失败</string>
+
+    <!-- 权限引导 -->
+    <string name="guide_title">开启通知使用权</string>
+    <string name="guide_desc">小豆通知需要「通知使用权」才能保存和管理通知。这是系统级权限，所有处理都在你的手机本地完成。</string>
+    <string name="guide_button">前往系统设置开启</string>
+    <string name="guide_later">稍后再说</string>
+    <string name="guide_listener_hint">通知已允许。要读取并保存通知，还需在「设置 → 通知使用权」中开启。</string>
+
+    <!-- 5 秒撤销 -->
+    <string name="undo_notification_title">通知已消除</string>
+    <string name="undo_notification_text">点击恢复这条通知</string>
+    <string name="undo_action">恢复</string>
+
+    <!-- 时间轴 / 搜索 / 分口径（补齐 P0） -->
+    <string name="history_timeline">按日回溯</string>
+    <string name="history_today">今天</string>
+    <string name="history_date_pick">选择日期</string>
+    <string name="history_clear_date">显示全部</string>
+    <string name="search_type_all">全部类型</string>
+    <string name="search_type_code">验证码</string>
+    <string name="search_type_ongoing">常驻</string>
+    <string name="search_type_media">媒体</string>
+    <string name="search_type_normal">普通</string>
+    <string name="history_count_summary">已保留 %1$d · 已过滤 %2$d · 已学习 %3$d</string>
+    <string name="history_no_result">该日期无匹配通知</string>
+
+    <!-- 规则管理（删除/排序/复制） -->
+    <string name="rule_duplicate">复制规则</string>
+    <string name="rule_duplicated">已复制规则</string>
+    <string name="rule_move_up">上移</string>
+    <string name="rule_move_down">下移</string>
+    <string name="rule_deleted">已删除规则</string>
+    <string name="rule_actions">更多操作</string>
+
+    <!-- 预设模板 -->
+    <string name="rule_templates">预设模板</string>
+    <string name="template_pick_title">选择要启用的模板</string>
+    <string name="template_promo">消除推广营销</string>
+    <string name="template_work_mute">下班后静音工作群</string>
+    <string name="template_family_call">家人消息来电提醒</string>
+    <string name="template_express_tts">快递到货自动朗读</string>
+    <string name="template_added">模板已添加，可在列表中修改</string>
+
+    <!-- 验证码复制 -->
+    <string name="code_detected_title">检测到验证码</string>
+    <string name="code_detected_text">验证码：%1$s（点击复制）</string>
+    <string name="code_copy_action">复制</string>
+    <string name="code_copied_toast">验证码已复制</string>
+
+    <!-- 设置补充 -->
+    <string name="settings_exclude_apps">排除应用</string>
+    <string name="settings_exclude_desc">名单内 App 的通知不参与处理</string>
+    <string name="settings_exclude_mode">排除的应用仍记录历史</string>
+    <string name="settings_reset_model">重置 AI 模型</string>
+    <string name="settings_reset_model_confirm">确定重置 AI 学习成果？历史记录会保留。</string>
+    <string name="settings_reset_model_done">模型已重置</string>
+    <string name="settings_mute_threshold">智能静音：%1$d 条 / %2$d 秒内</string>
+    <string name="settings_mute_duration">静音时长：%1$d 秒</string>
+    <string name="settings_retain_days">历史保留 %1$d 天</string>
+    <string name="settings_unlock_now">解除静音</string>
+    <string name="settings_unmuted">已恢复铃声</string>
+    <string name="settings_app_lock">应用锁</string>
+    <string name="settings_app_lock_desc">进入应用需指纹/面容验证</string>
+    <string name="settings_permission_lost">通知使用权似乎已被收回，点此重新开启</string>
+    <string name="settings_missed_warning">检测到监听服务曾中断，%1$s 之后的通知可能未记录</string>
+
+    <!-- 分析补充 -->
+    <string name="stats_scope_all">全部</string>
+    <string name="stats_scope_kept">仅已保留</string>
+    <string name="stats_scope_filtered">仅已过滤</string>
+    <string name="stats_learned">已学习样本</string>
+
+    <!-- Webhook 隐私明示 -->
+    <string name="webhook_privacy_notice">注意：此动作会将通知标题与正文发送到你指定的地址，数据将离开本机。</string>
+
+    <!-- 应用锁 -->
+    <string name="app_lock_title">验证身份</string>
+    <string name="app_lock_subtitle">验证后才能查看通知历史</string>
+    <string name="app_lock_no_device">设备未设置指纹或锁屏密码</string>
+
+    <!-- 应用锁独立 PIN（v1.3.2） -->
+    <string name="app_lock_pin_set_title">设置应用锁密码</string>
+    <string name="app_lock_pin_set_hint">输入 4-6 位数字密码</string>
+    <string name="app_lock_pin_confirm_hint">再次输入以确认</string>
+    <string name="app_lock_pin_verify_title">输入应用锁密码</string>
+    <string name="app_lock_pin_empty">请输入密码</string>
+    <string name="app_lock_pin_mismatch">两次输入不一致，请重设</string>
+    <string name="app_lock_pin_invalid">密码长度需为 4-6 位数字</string>
+    <string name="app_lock_pin_wrong">密码错误，请重试</string>
+    <string name="app_lock_pin_set_done">应用锁密码已设置</string>
+    <string name="app_lock_change_pin">修改应用锁密码</string>
+    <string name="app_lock_use_biometric">改用指纹/锁屏密码</string>
+    <string name="app_lock_pin_desc">开启时需自设数字密码；之后进入应用用它验证</string>
+
+    <!-- 星期 -->
+    <string name="rule_days">生效星期（不选=每天）</string>
+    <string name="day_sun">日</string>
+    <string name="day_mon">一</string>
+    <string name="day_tue">二</string>
+    <string name="day_wed">三</string>
+    <string name="day_thu">四</string>
+    <string name="day_fri">五</string>
+    <string name="day_sat">六</string>
+
+    <!-- 规则导入导出 -->
+    <string name="rule_export">导出规则</string>
+    <string name="rule_import">导入规则</string>
+    <string name="rule_export_done">规则已导出</string>
+    <string name="rule_import_done">已导入 %1$d 条规则（跳过 %2$d 条重名）</string>
+    <string name="rule_import_failed">导入失败：文件格式不正确</string>
+
+    <!-- FR-E6 多主题 -->
+    <string name="settings_appearance">外观</string>
+    <string name="theme_mode_label">深浅模式：%1$s</string>
+    <string name="theme_color_label">配色主题：%1$s</string>
+    <string name="launcher_icon_label">桌面图标：%1$s</string>
+    <string name="launcher_icon_dialog_title">选择桌面图标</string>
+    <string name="launcher_icon_hint">切换后桌面图标会变化，部分桌面需等几秒或重启桌面才刷新。</string>
+
+    <!-- v1.5.0 Pro 买断 / v1.6.0 权益重做：从「事后查看」改为「实时守护·高频·爽感」 -->
+    <string name="pro_card_title">小豆通知 Pro</string>
+    <string name="pro_card_subtitle">重要守护 · 验证码保险箱 · 清净周报</string>
+    <string name="pro_status_free">免费版 · 点此查看 Pro 与获取激活码</string>
+    <string name="pro_dialog_title">解锁 Pro</string>
+    <string name="pro_dialog_hint">输入激活码（MD1- 开头，区分大小写）</string>
+    <string name="pro_dialog_benefits">Pro 权益：\n· 重要通知守护：白名单绝不误杀，可二次强提醒\n· 验证码保险箱：所有码自动归档，划掉也能找回\n· 清净周报：战绩卡一键生成、可分享\n· 另含：导出全部历史 / 无限历史保留 / 30 天统计\n\n周卡 ¥1（7 天）· 永久 ¥18 一次买断\n点「获取激活码」查看付款方式，拿到码后输入下方即可解锁。</string>
+    <string name="pro_activate">激活</string>
+    <string name="pro_activate_ok">激活成功，Pro 已解锁</string>
+    <string name="pro_activate_fail">激活码无效，请核对后重试</string>
+    <string name="pro_deactivate">已激活 Pro，点此可查看状态</string>
+    <string name="pro_free_locked">此功能需 Pro，点此解锁</string>
+
+    <!-- v1.6.0 统一解锁面板 ProSheet -->
+    <string name="pro_sheet_title">解锁 Pro · 一次买断</string>
+    <string name="pro_sheet_hook">「%1$s」是 Pro 功能</string>
+    <string name="pro_sheet_hook_sub">解锁后立即为你打开，永久可用</string>
+    <string name="pro_sheet_benefits">· 重要通知守护　白名单绝不误杀，可二次强提醒\n· 验证码保险箱　所有码自动归档，划掉也能找回\n· 清净周报　战绩卡一键生成，可分享\n· 另含　导出全部历史 / 无限历史 / 30 天统计</string>
+    <string name="pro_sheet_price">周卡 ¥1（7 天）　·　永久 ¥18（一次买断）</string>
+    <string name="pro_sheet_how">已有激活码直接粘贴到下方；还没有码请点下方链接查看获取方式</string>
+    <string name="pro_sheet_no_code">还没有激活码？点此查看获取方式 →</string>
+    <string name="pro_sheet_activate">立即激活</string>
+    <string name="pro_sheet_status">当前：%1$s</string>
+    <string name="pro_feature_stats_30d">近 30 天深度统计</string>
+    <string name="pro_feature_export_all">导出全部历史</string>
+    <string name="pro_feature_vip_guard">重要通知守护</string>
+    <string name="pro_feature_code_vault">验证码保险箱</string>
+    <string name="pro_feature_weekly">清净周报</string>
+
+    <!-- v1.6.2 购买引导：把「付款后向开发者索取」这句死胡同补成可执行闭环 -->
+    <string name="pro_buy_title">获取 Pro 激活码</string>
+    <string name="pro_buy_price">周卡 ¥1（7 天）　·　永久 ¥18（一次买断）</string>
+    <string name="pro_buy_steps">① 用微信扫下方收款码付款，金额对应所选套餐\n　 付款前请核对收款人显示为「四十二(**利)」\n② 本机扫不了自己屏幕：可用另一台手机扫，或点按下方收款码放大后截图，再用微信「扫一扫 → 相册」识别\n③ 付款后点「联系开发者」，附上付款截图并注明周卡或永久\n④ 收到 MD1- 开头的激活码后，回到解锁面板粘贴即可\n\n码不记名、可转赠；离线校验，不联网、不需要账号。</string>
+    <string name="pro_buy_qr_hint">微信收款码 · 收款人 四十二(**利) · 点按放大</string>
+    <string name="pro_buy_qr_missing">当前为开源社区构建，未内置收款码。请下载官方发布包，或点「联系开发者」获取付款方式</string>
+    <string name="pro_buy_qr_zoom">收款码（点按关闭 · 截图后用微信「扫一扫 → 相册」识别）</string>
+    <string name="pro_buy_contact">联系开发者</string>
+    <string name="pro_buy_back">返回输入激活码</string>
+    <string name="pro_buy_open_fail">无法打开浏览器，请手动访问 github.com/qiangsi/xiaodou-notify-android/issues</string>
+
+    <!-- v1.6.0 重要通知守护 -->
+    <string name="vip_guard_title">重要通知守护</string>
+    <string name="vip_guard_desc">命中的通知绝不误杀，强制保留、跳过一切过滤</string>
+    <string name="vip_guard_dialog_title">设置重要守护词</string>
+    <string name="vip_guard_dialog_msg">用逗号分隔，匹配标题 / 正文 / 应用名。命中即强制保留，AI 与规则都不会消除它。例如：老板,老婆,快递,验证码,银行</string>
+    <string name="vip_guard_hint">老板,家人,验证码,快递</string>
+    <string name="vip_guard_saved">守护词已保存，之后命中通知会强制保留</string>
+    <string name="vip_guard_enable">启用重要通知守护</string>
+    <string name="vip_guard_status_on">守护中 · %1$d 个词</string>
+    <string name="vip_guard_status_off">未开启</string>
+    <string name="vip_reason">重要守护 · 强制保留</string>
+
+    <!-- v1.6.0 验证码保险箱 -->
+    <string name="code_vault_title">验证码保险箱</string>
+    <string name="code_vault_desc">所有验证码 / 取件码自动归档，划掉也能找回</string>
+    <string name="code_vault_empty">还没有捕获到验证码。收到含验证码的通知后，会自动出现在这里。</string>
+    <string name="code_vault_locked_hint">还有 %1$d 个历史验证码，解锁 Pro 查看全部</string>
+    <string name="code_vault_expired">已过期</string>
+    <string name="code_vault_valid">有效</string>
+    <string name="code_vault_min_left">剩 %1$d 分钟</string>
+    <string name="code_vault_copy">复制</string>
+    <string name="code_vault_copied">已复制到剪贴板</string>
+    <string name="code_vault_free_limit">免费版仅显示最近 3 个</string>
+
+    <!-- v1.6.0 清净周报 -->
+    <string name="weekly_title">本周清净周报</string>
+    <string name="weekly_btn">生成清净周报</string>
+    <string name="weekly_share">分享战绩</string>
+    <string name="weekly_body">本周小豆通知为你挡下 %1$d 条骚扰，清净指数 %2$d 分。最吵的是「%3$s」。清净，是一种可以量化的自由。</string>
+    <string name="weekly_empty">数据还不够，多用几天再生成周报吧</string>
+    <!-- FR-E4 桌面小部件 / 暂停过滤 -->
+    <string name="settings_filter_paused">暂停过滤</string>
+    <string name="settings_filter_paused_desc">开启后仅记录通知，不执行任何规则与 AI 过滤，桌面小部件可快捷切换</string>
+    <string name="appwidget_description">小豆通知 · 今日统计与过滤开关</string>
+    <string name="widget_label_kept">保留</string>
+    <string name="widget_label_filtered">已过滤</string>
+    <string name="widget_paused">已暂停</string>
+    <string name="widget_active">过滤中</string>
+    <string name="widget_today">今日通知</string>
+    <string name="rules_subtitle">按顺序匹配，命中第一条即执行</string>
+    <string name="stats_subtitle">近段时间的过滤效果与来源分布 · 点按上方数字查看明细</string>
+    <string name="settings_filter">过滤</string>
+    <string name="rule_add">新建规则</string>
+    <string name="rule_condition">匹配条件</string>
+    <string name="settings_lock_now">立即锁定</string>
+    <string name="settings_battery_opt">电池优化白名单</string>
+    <string name="settings_battery_opt_desc">加入白名单可显著降低后台被清理的概率</string>
+    <string name="app_lock_on">应用锁已开启，离开应用后再次进入需要验证</string>
+    <string name="app_lock_off">应用锁已关闭</string>
+    <string name="app_lock_canceled">已取消验证，应用锁未开启</string>
+    <string name="app_lock_locked">已锁定，再次进入需验证</string>
+    <string name="app_lock_need_enable">请先开启应用锁</string>
+    <string name="battery_whitelisted">已在电池优化白名单中</string>
+    <string name="battery_whitelist_failed">无法打开系统设置，请手动添加白名单</string>
+
+    <!-- 运行状态自检 v1.3.2 -->
+    <string name="settings_status">运行状态</string>
+    <string name="settings_status_permission">通知使用权</string>
+    <string name="settings_status_listener">监听服务</string>
+    <string name="settings_status_filter">过滤引擎</string>
+    <string name="settings_status_on">运行中</string>
+    <string name="settings_status_off">已断开</string>
+    <string name="settings_status_filter_on">已开启 · 命中规则或 AI 判定后自动处理</string>
+    <string name="settings_status_filter_off">未开启 · 仅记录通知，不会拦截</string>
+    <string name="settings_status_rebind">重新连接监听</string>
+    <string name="settings_status_rebind_done">已请求重新连接，请稍候</string>
+    <string name="settings_status_tip">若显示「已断开」：请确认系统设置中已开启通知使用权，并加入电池优化白名单。</string>
+
+    <!-- v1.4.0 应用锁增强：离开时长 / 解锁方式 / 备用恢复 -->
+    <string name="lock_away_title">离开多久后验证</string>
+    <string name="lock_away_always">每次进入都验证</string>
+    <string name="lock_away_15s">15 秒</string>
+    <string name="lock_away_1min">1 分钟</string>
+    <string name="lock_away_3min">3 分钟</string>
+
+    <string name="lock_method_title">解锁方式</string>
+    <string name="lock_method_pin">密码（数字 PIN）</string>
+    <string name="lock_method_biometric">生物识别（指纹/人脸）</string>
+    <string name="lock_method_both">密码或生物识别</string>
+
+    <string name="lock_recovery_title">备用恢复方式</string>
+    <string name="lock_recovery_set">已设置安全问题</string>
+    <string name="lock_recovery_unset">未设置 · 忘记密码将无法找回</string>
+    <string name="lock_recovery_clear">清除</string>
+    <string name="lock_recovery_saved">备用恢复问题已保存</string>
+    <string name="lock_recovery_cleared">备用恢复问题已清除</string>
+
+    <string name="app_lock_forgot_pin">忘记密码？</string>
+    <string name="recovery_title">找回应用锁密码</string>
+    <string name="recovery_q1">你出生城市的名字？</string>
+    <string name="recovery_q2">你第一只宠物的名字？</string>
+    <string name="recovery_q3">你就读的第一所小学名称？</string>
+    <string name="recovery_q4">你母亲的名字？</string>
+    <string name="recovery_question_prompt">请回答你设置的安全问题：%1$s</string>
+    <string name="recovery_answer_hint">输入答案</string>
+    <string name="recovery_answer_empty">请输入答案</string>
+    <string name="recovery_answer_wrong">答案不正确，请重试</string>
+    <string name="recovery_no_question_biometric">你未设置备用安全问题，是否改用指纹/人脸验证身份后重置密码？</string>
+    <string name="recovery_use_biometric">使用生物识别</string>
+    <string name="recovery_impossible">未设置备用恢复方式，且设备不支持生物识别，无法找回密码。若确认无法进入，只能卸载重装（历史数据会丢失）。</string>
+    <string name="recovery_reset_pin_hint">验证通过，请设置新的应用锁密码</string>
+
+    <!-- v1.4.0 设置页底部小字入口 -->
+    <string name="entry_update">更新版本</string>
+    <string name="entry_about">关于</string>
+    <string name="entry_feedback">意见反馈</string>
+    <string name="entry_update_failed">无法打开浏览器，请手动访问项目主页</string>
+    <string name="entry_feedback_failed">无法打开浏览器，请手动访问项目 Issues 页面</string>
+    <string name="about_message">小豆通知 · 本地通知管家\n版本 %1$s\n\n所有通知仅在你的设备本地加密存储，不上传任何内容。\n支持通知历史、自定义过滤规则、离线 AI 骚扰识别、验证码提取与桌面小部件。\n\n开源项目：github.com/qiangsi/xiaodou-notify-android</string>
+
+    <!-- v1.4.1 诊断探针 -->
+    <string name="diag_title">通知诊断</string>
+    <string name="diag_entry">运行诊断（排查通知不生效）</string>
+    <string name="diag_run_probe">发送自测通知</string>
+    <string name="diag_watch">观察真实通知</string>
+    <string name="diag_watch_stop">停止观察</string>
+    <string name="diag_refresh">刷新状态</string>
+    <string name="diag_force_rebind">强制重连监听</string>
+    <string name="diag_force_rebind_done">已强制重连，请重新打开应用后再点「发送自测通知」验证</string>
+    <string name="diag_copy">复制报告</string>
+    <string name="diag_logcat">抓取日志</string>
+    <string name="diag_open_permission">通知使用权</string>
+    <string name="probe_notification_title">小豆通知 · 监听自测</string>
+    <string name="diag_need_post_permission">需要先允许本应用发送通知，才能发出自测通知</string>
+    <string name="diag_probe_sent">已发出自测通知：%1$s\n请等 8 秒后看结果（通知被系统静默也属正常，只看是否被捕获）</string>
+    <string name="diag_probe_ok">监听链路正常：自测通知已被捕获</string>
+    <string name="diag_probe_timeout">未捕获到自测通知：请看报告里的权限与服务状态</string>
+    <string name="diag_copied">报告已复制，可直接粘贴发给开发者</string>
+    <string name="diag_logcat_title">相关日志（最近）</string>
+    <string name="diag_session_started">观察已开始：切到其他 App 发一条通知，回来点「刷新状态」</string>
+    <string name="diag_session_stopped">观察已停止</string>
+    <string name="diag_hint">自测与过滤规则无关，只验证系统是否把通知回调给本应用。</string>
+</resources>

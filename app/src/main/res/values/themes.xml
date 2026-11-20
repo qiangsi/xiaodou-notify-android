@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      统一主题：使用 DayNight 父主题，浅/深差异全部由 values-night 的同名色值提供。
+      这样页面、弹窗、组件与四套配色在切换模式时不会出现“浅色底 + 深色字”等错乱。
+    -->
+    <style name="Theme.XiaodouNotify" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+        <item name="colorSecondary">@color/primary</item>
+        <item name="colorOnSecondary">@color/on_primary</item>
+        <item name="colorSecondaryContainer">@color/primary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_primary_container</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surface_alt</item>
+        <item name="colorSurfaceContainerLowest">@color/surface</item>
+        <item name="colorSurfaceContainerLow">@color/background</item>
+        <item name="colorSurfaceContainer">@color/surface_alt</item>
+        <item name="colorSurfaceContainerHigh">@color/surface</item>
+        <item name="colorSurfaceContainerHighest">@color/surface_alt</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorError">@color/badge_filtered_text</item>
+        <item name="colorErrorContainer">@color/badge_filtered_bg</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_tertiary</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/light_status_bar</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Xiaodou.Dialog</item>
+    </style>
+
+    <!-- 弹窗使用与页面一致的中性表面色，避免默认配色带来的偏色 -->
+    <style name="ThemeOverlay.Xiaodou.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceContainerLowest">@color/surface</item>
+        <item name="colorSurfaceContainerLow">@color/surface</item>
+        <item name="colorSurfaceContainer">@color/surface</item>
+        <item name="colorSurfaceContainerHigh">@color/surface</item>
+        <item name="colorSurfaceContainerHighest">@color/surface_alt</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+    </style>
+
+    <!-- ============ FR-E6 多配色：青绿 ============ -->
+    <style name="Theme.XiaodouNotify.Teal">
+        <item name="colorPrimary">@color/theme_teal_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_teal_light</item>
+        <item name="colorOnPrimaryContainer">@color/theme_teal_dark</item>
+        <item name="colorSecondary">@color/theme_teal_primary</item>
+        <item name="colorSecondaryContainer">@color/theme_teal_light</item>
+        <item name="colorOnSecondaryContainer">@color/theme_teal_dark</item>
+    </style>
+
+    <!-- ============ FR-E6 多配色：紫罗兰 ============ -->
+    <style name="Theme.XiaodouNotify.Purple">
+        <item name="colorPrimary">@color/theme_purple_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_purple_light</item>
+        <item name="colorOnPrimaryContainer">@color/theme_purple_dark</item>
+        <item name="colorSecondary">@color/theme_purple_primary</item>
+        <item name="colorSecondaryContainer">@color/theme_purple_light</item>
+        <item name="colorOnSecondaryContainer">@color/theme_purple_dark</item>
+    </style>
+
+    <!-- ============ FR-E6 多配色：珊瑚橙 ============ -->
+    <style name="Theme.XiaodouNotify.Coral">
+        <item name="colorPrimary">@color/theme_coral_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_coral_light</item>
+        <item name="colorOnPrimaryContainer">@color/theme_coral_dark</item>
+        <item name="colorSecondary">@color/theme_coral_primary</item>
+        <item name="colorSecondaryContainer">@color/theme_coral_light</item>
+        <item name="colorOnSecondaryContainer">@color/theme_coral_dark</item>
+    </style>
+
+    <!-- ============ v1.5.0 低饱和新配色：燕麦 ============ -->
+    <style name="Theme.XiaodouNotify.Oat">
+        <item name="colorPrimary">@color/theme_oat_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_oat_light</item>
+        <item name="colorOnPrimaryContainer">@color/theme_oat_dark</item>
+        <item name="colorSecondary">@color/theme_oat_primary</item>
+        <item name="colorSecondaryContainer">@color/theme_oat_light</item>
+        <item name="colorOnSecondaryContainer">@color/theme_oat_dark</item>
+    </style>
+
+    <!-- ============ v1.5.0 低饱和新配色：藕荷 ============ -->
+    <style name="Theme.XiaodouNotify.Lotus">
+        <item name="colorPrimary">@color/theme_lotus_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_lotus_light</item>
+        <item name="colorOnPrimaryContainer">@color/theme_lotus_dark</item>
+        <item name="colorSecondary">@color/theme_lotus_primary</item>
+        <item name="colorSecondaryContainer">@color/theme_lotus_light</item>
+        <item name="colorOnSecondaryContainer">@color/theme_lotus_dark</item>
+    </style>
+
+    <!-- ============ v1.5.0 低饱和新配色：藏青 ============ -->
+    <style name="Theme.XiaodouNotify.Navy">
+        <item name="colorPrimary">@color/theme_navy_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_navy_light</item>
+        <item name="colorOnPrimaryContainer">@color/theme_navy_dark</item>
+        <item name="colorSecondary">@color/theme_navy_primary</item>
+        <item name="colorSecondaryContainer">@color/theme_navy_light</item>
+        <item name="colorOnSecondaryContainer">@color/theme_navy_dark</item>
+    </style>
+
+    <style name="Theme.XiaodouNotify.Dialog" parent="Theme.Material3.DayNight.Dialog.Alert" />
+
+    <!-- ============ 通用视觉组件：统一圆角、描边、层级 ============ -->
+    <style name="Widget.Xiaodou.Card" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardCornerRadius">@dimen/radius_l</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/surface</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/card_stroke</item>
+    </style>
+
+    <!-- 无描边的柔和卡片，用于大容器 -->
+    <style name="Widget.Xiaodou.Card.Plain" parent="Widget.Xiaodou.Card">
+        <item name="strokeWidth">0dp</item>
+        <item name="cardBackgroundColor">@color/surface</item>
+    </style>
+
+    <style name="Widget.Xiaodou.Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">@dimen/radius_m</item>
+        <item name="android:textSize">13.5sp</item>
+        <item name="android:textColor">@color/on_primary</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="Widget.Xiaodou.TonalButton" parent="Widget.Material3.Button.TonalButton">
+        <item name="cornerRadius">@dimen/radius_m</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="Widget.Xiaodou.DangerButton" parent="Widget.Material3.Button">
+        <item name="cornerRadius">@dimen/radius_m</item>
+        <item name="backgroundTint">@color/badge_filtered_bg</item>
+        <item name="android:textColor">@color/badge_filtered_text</item>
+        <item name="android:textSize">13.5sp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <!-- 列表型按钮：左对齐、透明底，视觉上等同设置行 -->
+    <style name="Widget.Xiaodou.RowButton" parent="Widget.Material3.Button.TextButton">
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">@dimen/row_height</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="cornerRadius">0dp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="iconTint">?attr/colorPrimary</item>
+        <item name="iconSize">20dp</item>
+        <item name="iconPadding">12dp</item>
+        <item name="iconGravity">textStart</item>
+    </style>
+
+    <!-- 分段筛选胶囊 -->
+    <style name="Widget.Xiaodou.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="chipMinHeight">@dimen/chip_height</item>
+        <item name="chipCornerRadius">17dp</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/chip_stroke</item>
+        <item name="chipBackgroundColor">@color/chip_bg</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="android:textSize">12.5sp</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+        <item name="chipStartPadding">6dp</item>
+        <item name="chipEndPadding">6dp</item>
+        <item name="textStartPadding">10dp</item>
+        <item name="textEndPadding">10dp</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+
+    <!-- 幽灵胶囊：日期 / 类型等次级筛选 -->
+    <style name="Widget.Xiaodou.Chip.Ghost" parent="Widget.Xiaodou.Chip.Filter">
+        <item name="chipIconTint">@color/text_secondary</item>
+        <item name="chipIconSize">15dp</item>
+        <item name="iconStartPadding">2dp</item>
+        <item name="closeIconTint">@color/text_secondary</item>
+        <item name="closeIconSize">14dp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <!-- 无指示器：选中态只用颜色区分，避免胶囊与文字互相挤压 -->
+    <style name="Widget.Xiaodou.NavIndicator.Hidden" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@android:color/transparent</item>
+        <item name="android:width">0dp</item>
+        <item name="android:height">0dp</item>
+    </style>
+
+    <style name="Widget.Xiaodou.NavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/primary_container</item>
+        <item name="android:width">62dp</item>
+        <item name="android:height">30dp</item>
+    </style>
+
+    <style name="Widget.Xiaodou.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="thumbTint">@color/switch_thumb</item>
+        <item name="trackTint">@color/switch_track</item>
+    </style>
+
+    <style name="Widget.Xiaodou.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressTint">?attr/colorPrimary</item>
+        <item name="android:thumbTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.Xiaodou.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressTint">?attr/colorPrimary</item>
+        <item name="android:progressBackgroundTint">@color/surface_alt</item>
+    </style>
+
+    <style name="TextAppearance.Xiaodou.PageTitle" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">-0.015</item>
+    </style>
+
+    <style name="TextAppearance.Xiaodou.Section" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+    </style>
+
+    <style name="TextAppearance.Xiaodou.CardTitle" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textSize">14.5sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.Xiaodou.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.Xiaodou.Caption" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">11.5sp</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.Xiaodou.NavActive" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">10.5sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="TextAppearance.Xiaodou.NavInactive" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">10.5sp</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+</resources>
