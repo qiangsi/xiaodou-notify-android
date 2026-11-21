@@ -113,8 +113,10 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
             val since = cal.timeInMillis
 
             app.appScope.launch {
-                val total = try { app.database.notificationDao().countSince(since) } catch (e: Exception) { 0 }
-                val filtered = try { app.database.notificationDao().countFilteredSince(since) } catch (e: Exception) { 0 }
+                // v1.7.3：与历史/统计口径一致，默认隐藏系统操作提示
+                val showFeedback = app.prefs.showFeedbackNotices
+                val total = try { app.database.notificationDao().countSinceVisible(since, showFeedback) } catch (e: Exception) { 0 }
+                val filtered = try { app.database.notificationDao().countFilteredSinceVisible(since, showFeedback) } catch (e: Exception) { 0 }
                 val paused = app.prefs.filterPaused
 
                 views.setTextViewText(R.id.widget_today, total.toString())

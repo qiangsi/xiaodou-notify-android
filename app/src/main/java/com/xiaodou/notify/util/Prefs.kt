@@ -37,6 +37,15 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_CODE_COPY, true)
         set(value) = sp.edit().putBoolean(KEY_CODE_COPY, value).apply()
 
+    /**
+     * 是否显示「系统操作反馈」通知（截图已保存 / 录屏 / 投屏等系统自动生成、用户无需专门查看的提示）。
+     * 默认 false：此类通知照常加密落库，但在历史列表、统计与小部件中默认隐藏，
+     * 仅在用户主动打开此开关后才显示。开关状态存 SharedPreferences，重启后保留。
+     */
+    var showFeedbackNotices: Boolean
+        get() = sp.getBoolean(KEY_SHOW_FEEDBACK_NOTICES, false)
+        set(value) = sp.edit().putBoolean(KEY_SHOW_FEEDBACK_NOTICES, value).apply()
+
     var guideShown: Boolean
         get() = sp.getBoolean(KEY_GUIDE_SHOWN, false)
         set(value) = sp.edit().putBoolean(KEY_GUIDE_SHOWN, value).apply()
@@ -295,6 +304,7 @@ class Prefs(context: Context) {
         private const val KEY_UNDO = "undo_enabled"
         private const val KEY_SMART_MUTE = "smart_mute"
         private const val KEY_CODE_COPY = "code_copy"
+        private const val KEY_SHOW_FEEDBACK_NOTICES = "show_feedback_notices"
         private const val KEY_GUIDE_SHOWN = "guide_shown"
         private const val KEY_EXCLUDED = "excluded_apps"
         private const val KEY_EXCLUDE_MODE = "exclude_no_record"

@@ -117,19 +117,21 @@ class StatsFragment : Fragment() {
     private fun refresh() {
         lifecycleScope.launch(Dispatchers.IO) {
             val dao = app.database.notificationDao()
-            val total = dao.countAll()
-            val filtered = dao.countByResult(Result.RULE) + dao.countByResult(Result.AI)
+            // v1.7.3：默认隐藏系统操作提示，统计口径与历史列表保持一致
+            val showFeedback = app.prefs.showFeedbackNotices
+            val total = dao.countAllVisible(showFeedback)
+            val filtered = dao.countByResultVisible(Result.RULE, showFeedback) + dao.countByResultVisible(Result.AI, showFeedback)
             val since = System.currentTimeMillis() - days * 86_400_000L
-            val raw = dao.dailyRaw(since) // timestamp + result
-            val learned = dao.countLearned()
+            val raw = dao.dailyRawVisible(since, showFeedback) // timestamp + result
+            val learned = dao.countLearnedVisible(showFeedback)
 
             // 排行：按口径取对应结果的应用分布（FR-S1 分口径查看）
             val rank = when (scope) {
-                SCOPE_ALL -> dao.packageRank(since)
-                SCOPE_KEPT -> dao.packageRankByResult(since, Result.KEPT)
+                SCOPE_ALL -> dao.packageRankVisible(since, showFeedback)
+                SCOPE_KEPT -> dao.packageRankByResultVisible(since, Result.KEPT, showFeedback)
                 else -> {
-                    val kept = dao.packageRankByResult(since, Result.KEPT)
-                    val filtered = dao.packageRankByResult(since, Result.RULE) + dao.packageRankByResult(since, Result.AI)
+                    val kept = dao.packageRankByResultVisible(since, Result.KEPT, showFeedback)
+                    val filtered = dao.packageRankByResultVisible(since, Result.RULE, showFeedback) + dao.packageRankByResultVisible(since, Result.AI, showFeedback)
                     (kept + filtered).groupBy { it.packageName }
                         .map { PackageCount(it.key, it.value.sumOf { p -> p.cnt }) }
                         .sortedByDescending { it.cnt }

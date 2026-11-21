@@ -15,6 +15,7 @@ import com.xiaodou.notify.data.FilterRule
 import com.xiaodou.notify.data.NotificationEntity
 import com.xiaodou.notify.data.Result
 import com.xiaodou.notify.engine.ActionExecutor
+import com.xiaodou.notify.engine.FeedbackNoticeFilter
 import com.xiaodou.notify.engine.MatchContext
 import com.xiaodou.notify.engine.MuteController
 import com.xiaodou.notify.engine.RuleEngine
@@ -256,13 +257,26 @@ class NotificationMonitorService : NotificationListenerService() {
                 if (words.isNotEmpty()) {
                     val haystack = "$appName $finalTitle $finalText"
                     if (words.any { haystack.contains(it, ignoreCase = true) }) {
-                        dao.update(saved.copy(result = Result.KEPT, filterReason = applicationContext.getString(R.string.vip_reason)))
+                        // 用户显式守护的反馈通知按普通通知展示，不再受「默认隐藏」约束
+                        val guarded = saved.copy(
+                            result = Result.KEPT,
+                            filterReason = applicationContext.getString(R.string.vip_reason),
+                            category = if (category == FeedbackNoticeFilter.CATEGORY) null else saved.category
+                        )
+                        dao.update(guarded)
                         return@launch
                     }
                 }
             }
 
             if (excludedNoFilter) return@launch // 排除档位2：记录不过滤
+
+            // v1.7.3 系统操作反馈：照常加密落库，但不参与规则/AI/静音判定，
+            // 避免截图这类提示消耗静音窗口或触发误拦截。默认在历史/统计中隐藏，开关打开才显示。
+            if (category == FeedbackNoticeFilter.CATEGORY) {
+                dao.update(saved.copy(filterReason = applicationContext.getString(R.string.feedback_reason)))
+                return@launch
+            }
 
             // FR-E4 全局暂停过滤：仅记录，不执行任何规则/AI/静音
             if (app.prefs.filterPaused) return@launch
@@ -398,7 +412,10 @@ class NotificationMonitorService : NotificationListenerService() {
         val cat = sbn.notification.category ?: ""
         if (cat == Notification.CATEGORY_TRANSPORT) return "media"
         if (cat == Notification.CATEGORY_CALL) return "call"
-        return "normal"
+        val base = "normal"
+        // v1.7.3：在常规分类之后判定系统操作反馈，命中则单独归类（仍走正常落库）
+        return if (FeedbackNoticeFilter.isFeedbackNotice(sbn.packageName, title, text, base, sbn.isOngoing))
+            FeedbackNoticeFilter.CATEGORY else base
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {

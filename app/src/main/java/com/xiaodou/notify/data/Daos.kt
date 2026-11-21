@@ -50,6 +50,34 @@ interface NotificationDao {
     @Query("SELECT timestamp, result FROM notifications WHERE timestamp >= :since")
     suspend fun dailyRaw(since: Long): List<DailyRaw>
 
+    // —— v1.7.3 系统操作提示：显示开关关闭时，从列表/统计中排除，但记录仍完整落库 ——
+    // Room 把 Boolean 绑定为 0/1；:showFeedback=true 时不加限制，false 时排除 feedback 类。
+    // 使用 COALESCE 让老数据（category 为 null）不受影响。
+
+    @Query("SELECT COUNT(*) FROM notifications WHERE :showFeedback = 1 OR COALESCE(category, '') != 'feedback'")
+    suspend fun countAllVisible(showFeedback: Boolean): Int
+
+    @Query("SELECT COUNT(*) FROM notifications WHERE result = :result AND (:showFeedback = 1 OR COALESCE(category, '') != 'feedback')")
+    suspend fun countByResultVisible(result: String, showFeedback: Boolean): Int
+
+    @Query("SELECT packageName, COUNT(*) AS cnt FROM notifications WHERE timestamp >= :since AND (:showFeedback = 1 OR COALESCE(category, '') != 'feedback') GROUP BY packageName ORDER BY cnt DESC")
+    suspend fun packageRankVisible(since: Long, showFeedback: Boolean): List<PackageCount>
+
+    @Query("SELECT packageName, COUNT(*) AS cnt FROM notifications WHERE timestamp >= :since AND result = :result AND (:showFeedback = 1 OR COALESCE(category, '') != 'feedback') GROUP BY packageName ORDER BY cnt DESC")
+    suspend fun packageRankByResultVisible(since: Long, result: String, showFeedback: Boolean): List<PackageCount>
+
+    @Query("SELECT timestamp, result FROM notifications WHERE timestamp >= :since AND (:showFeedback = 1 OR COALESCE(category, '') != 'feedback')")
+    suspend fun dailyRawVisible(since: Long, showFeedback: Boolean): List<DailyRaw>
+
+    @Query("SELECT COUNT(*) FROM notifications WHERE marked IS NOT NULL AND (:showFeedback = 1 OR COALESCE(category, '') != 'feedback')")
+    suspend fun countLearnedVisible(showFeedback: Boolean): Int
+
+    @Query("SELECT COUNT(*) FROM notifications WHERE timestamp >= :since AND (:showFeedback = 1 OR COALESCE(category, '') != 'feedback')")
+    suspend fun countSinceVisible(since: Long, showFeedback: Boolean): Int
+
+    @Query("SELECT COUNT(*) FROM notifications WHERE timestamp >= :since AND result != 'kept' AND (:showFeedback = 1 OR COALESCE(category, '') != 'feedback')")
+    suspend fun countFilteredSinceVisible(since: Long, showFeedback: Boolean): Int
+
     @Query("DELETE FROM notifications")
     suspend fun clearAll()
 

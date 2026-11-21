@@ -150,7 +150,8 @@ class HistoryFragment : Fragment() {
             getString(R.string.search_type_code) to "code",
             getString(R.string.search_type_ongoing) to "ongoing",
             getString(R.string.search_type_media) to "media",
-            getString(R.string.search_type_normal) to "normal"
+            getString(R.string.search_type_normal) to "normal",
+            getString(R.string.search_type_feedback) to com.xiaodou.notify.engine.FeedbackNoticeFilter.CATEGORY
         )
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.search_type_all)
@@ -172,7 +173,11 @@ class HistoryFragment : Fragment() {
     }
 
     private fun applyList() {
-        var list = all
+        // v1.7.3：系统操作提示默认隐藏，只有开关打开才进入历史列表与计数
+        val showFeedback = app?.prefs?.showFeedbackNotices == true
+        val scopeAll = if (showFeedback) all
+        else all.filter { it.category != com.xiaodou.notify.engine.FeedbackNoticeFilter.CATEGORY }
+        var list = scopeAll
         if (filter == FILTER_KEPT) list = list.filter { it.result == Result.KEPT }
         if (filter == FILTER_FILTERED) list = list.filter { it.result != Result.KEPT }
         if (filter == FILTER_LEARNED) list = list.filter { it.marked != null }
@@ -192,18 +197,13 @@ class HistoryFragment : Fragment() {
         }
         adapter.submitList(list, groupByDay = selectedDay == null)
 
-        // 概览计数（FR-H7）：基于全量数据实时统计
-        val kept = all.count { it.result == Result.KEPT }
-        val filtered = all.count { it.result != Result.KEPT }
-        val a = app
-        if (a != null) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                val learned = a.database.notificationDao().countLearned()
-                binding.tvCount.text = getString(R.string.history_count_summary, kept, filtered, learned)
-            }
-        } else {
-            binding.tvCount.text = getString(R.string.history_count_summary, kept, filtered, 0)
-        }
+        // 概览计数（FR-H7）：基于当前可见全量数据实时统计，默认不含被隐藏的系统操作提示
+        val kept = scopeAll.count { it.result == Result.KEPT }
+        val filtered = scopeAll.count { it.result != Result.KEPT }
+        binding.tvCount.text = getString(
+            R.string.history_count_summary, kept, filtered,
+            scopeAll.count { it.marked != null }
+        )
 
         binding.tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
         binding.tvEmpty.text = if (selectedDay != null || selectedType != null ||

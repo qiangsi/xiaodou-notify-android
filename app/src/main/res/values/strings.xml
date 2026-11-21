@@ -114,6 +114,9 @@
     <string name="settings_undo">5 秒撤销按钮</string>
     <string name="settings_smart_mute">智能静音</string>
     <string name="settings_code_copy">验证码提取</string>
+    <string name="settings_show_feedback">显示系统操作提示</string>
+    <string name="settings_show_feedback_desc">截图、录屏、投屏等系统自动生成的提示默认隐藏；开启后可在历史与统计中查看</string>
+    <string name="feedback_reason">系统操作提示 · 默认隐藏（设置中可开启显示）</string>
     <string name="settings_privacy">隐私与安全</string>
     <string name="settings_encryption">本地加密存储（AES-GCM / Keystore）</string>
     <string name="settings_encryption_on">已启用</string>
@@ -149,6 +152,7 @@
     <string name="search_type_ongoing">常驻</string>
     <string name="search_type_media">媒体</string>
     <string name="search_type_normal">普通</string>
+    <string name="search_type_feedback">系统提示</string>
     <string name="history_count_summary">已保留 %1$d · 已过滤 %2$d · 已学习 %3$d</string>
     <string name="history_no_result">该日期无匹配通知</string>
 

@@ -213,6 +213,12 @@ class SettingsFragment : Fragment() {
         binding.switchSmartmute.setOnCheckedChangeListener { _, c -> prefs.smartMuteEnabled = c }
         binding.switchCodecopy.isChecked = prefs.codeCopyEnabled
         binding.switchCodecopy.setOnCheckedChangeListener { _, c -> prefs.codeCopyEnabled = c }
+        // v1.7.3 系统操作提示显示开关：默认关闭=隐藏；切换即时保存，历史/统计下次进入即按新状态展示
+        binding.switchShowFeedback.isChecked = prefs.showFeedbackNotices
+        binding.switchShowFeedback.setOnCheckedChangeListener { _, c ->
+            prefs.showFeedbackNotices = c
+            XiaodouWidgetProvider.refreshAll(requireContext())
+        }
 
         // 智能静音可配（FR-E2）
         fun refreshMuteCfg() {
