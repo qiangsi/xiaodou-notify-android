@@ -244,6 +244,37 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_FILTER_PAUSED, false)
         set(value) = sp.edit().putBoolean(KEY_FILTER_PAUSED, value).apply()
 
+    // —— v1.7.5 待办收件箱：延迟/重要的通知集中处理（仅存通知 id，不含正文）——
+    /** 待办通知 id 集合（逗号分隔）。正文仍加密存于通知表，这里只引用 id。 */
+    var todoIds: String
+        get() = sp.getString(KEY_TODO_IDS, "") ?: ""
+        set(value) = sp.edit().putString(KEY_TODO_IDS, value).apply()
+
+    fun todoIdSet(): Set<Long> = todoIds.split(",").mapNotNull { it.toLongOrNull() }.toSet()
+
+    fun addTodo(id: Long) {
+        val set = todoIdSet().toMutableSet()
+        if (set.add(id)) todoIds = set.joinToString(",")
+    }
+
+    fun removeTodo(id: Long) {
+        val set = todoIdSet().toMutableSet()
+        if (set.remove(id)) todoIds = set.joinToString(",")
+    }
+
+    fun isTodo(id: Long): Boolean = todoIdSet().contains(id)
+
+    // —— v1.7.5 情景模式：一键组合 静音/暂停过滤/排除应用 ——
+    /** 当前场景：0=未启用 1=专注 2=睡眠 3=通勤 */
+    var sceneMode: Int
+        get() = sp.getInt(KEY_SCENE_MODE, 0)
+        set(value) = sp.edit().putInt(KEY_SCENE_MODE, value).apply()
+
+    /** 进入场景前的开关快照（JSON），退出时精确还原，避免覆盖用户原设置 */
+    var sceneBackup: String
+        get() = sp.getString(KEY_SCENE_BACKUP, "") ?: ""
+        set(value) = sp.edit().putString(KEY_SCENE_BACKUP, value).apply()
+
     // —— v1.4.1 诊断探针：只记录探针元数据与文本日志，不存储任何通知正文 ——
     /** 本次自测的随机标记；空=无进行中自测 */
     var probeToken: String
@@ -352,5 +383,8 @@ class Prefs(context: Context) {
         private const val KEY_PROBE_LOG = "probe_log"
         private const val KEY_VIP_GUARD_ENABLED = "vip_guard_enabled"
         private const val KEY_VIP_GUARD_WORDS = "vip_guard_words"
+        private const val KEY_TODO_IDS = "todo_ids"
+        private const val KEY_SCENE_MODE = "scene_mode"
+        private const val KEY_SCENE_BACKUP = "scene_backup"
     }
 }

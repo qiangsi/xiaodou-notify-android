@@ -47,6 +47,23 @@ class NotificationDetailActivity : AppCompatActivity() {
         binding.btnNormal.setOnClickListener { mark(0) }
         binding.btnRestore.setOnClickListener { restore() }
         binding.btnDelete.setOnClickListener { confirmDelete() }
+        binding.btnTodo.setOnClickListener { toggleTodo() }
+    }
+
+    private fun toggleTodo() {
+        val e = entity ?: return
+        if (app.prefs.isTodo(e.id)) {
+            app.prefs.removeTodo(e.id)
+            Toast.makeText(this, R.string.todo_done_toast, Toast.LENGTH_SHORT).show()
+        } else {
+            app.prefs.addTodo(e.id)
+            Toast.makeText(this, R.string.todo_add_toast, Toast.LENGTH_SHORT).show()
+        }
+        renderTodoState(e)
+    }
+
+    private fun renderTodoState(e: NotificationEntity) {
+        binding.btnTodo.text = getString(if (app.prefs.isTodo(e.id)) R.string.todo_done else R.string.todo_add)
     }
 
     private fun render(e: NotificationEntity) {
@@ -65,6 +82,7 @@ class NotificationDetailActivity : AppCompatActivity() {
         // 如实说明边界，不虚构「已被发送方撤回」结论。
         binding.tvRecalled.visibility = if (e.removedReason != null) android.view.View.VISIBLE else android.view.View.GONE
         binding.tvRecalled.text = "此通知已离开通知栏，这里保留的是它到达通知栏时的内容快照。若发送方随后撤回或删除，你仍可在此查看；未产生过通知的消息无法捕获。"
+        renderTodoState(e)
     }
 
     private fun mark(label: Int) {

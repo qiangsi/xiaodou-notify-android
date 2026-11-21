@@ -54,7 +54,7 @@ object ActionExecutor {
         }
         Actions.SNOOZE -> {
             snooze(context, entity, param, decryptedTitle, decryptedText)
-            ActionOutcome(true, Result.RULE, "已推迟")
+            ActionOutcome(true, Result.RULE, "已推迟并加入待办")
         }
         // 系统不允许第三方 App 改写他人通知内容/提示音，诚实降级不伪装成功（FR-R3）
         Actions.REPLACE -> ActionOutcome(false, Result.KEPT, "替换内容受系统限制未执行；可在历史中查看原文")
@@ -88,6 +88,8 @@ object ActionExecutor {
 
     private fun snooze(context: Context, entity: NotificationEntity, param: String, title: String, text: String) {
         val minutes = param.toIntOrNull()?.coerceIn(1, 1440) ?: 10
+        // v1.7.5：推迟的通知自动进待办收件箱，避免「弹完就忘」
+        (context.applicationContext as? XiaodouApp)?.prefs?.addTodo(entity.id)
         handler.postDelayed({
             NotificationBridge.showSnoozed(context, entity.id, title, text)
         }, TimeUnit.MINUTES.toMillis(minutes.toLong()))

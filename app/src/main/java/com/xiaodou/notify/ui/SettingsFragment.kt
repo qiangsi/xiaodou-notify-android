@@ -192,6 +192,32 @@ class SettingsFragment : Fragment() {
             refreshStatus()
         }
 
+        // v1.7.5 情景模式：一键组合过滤与静音，再点恢复原设置
+        fun refreshSceneLabel() {
+            val name = com.xiaodou.notify.engine.SceneController.name(requireContext(), prefs.sceneMode)
+            binding.tvSceneValue.text = getString(R.string.scene_current, name)
+        }
+        refreshSceneLabel()
+        binding.rowScene.setOnClickListener {
+            val modes = arrayOf(
+                R.string.scene_off, R.string.scene_focus, R.string.scene_sleep, R.string.scene_commute
+            ).map { getString(it) }.toTypedArray()
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.scene_pick)
+                .setSingleChoiceItems(modes, prefs.sceneMode) { dialog, which ->
+                    com.xiaodou.notify.engine.SceneController.apply(requireContext(), prefs, which)
+                    binding.switchFilterPaused.isChecked = prefs.filterPaused
+                    binding.switchSmartmute.isChecked = prefs.smartMuteEnabled
+                    refreshSceneLabel()
+                    binding.tvMuteCfg.text = getString(R.string.settings_mute_threshold, prefs.muteThreshold, prefs.muteWindowSec)
+                    binding.tvMuteDuration.text = getString(R.string.settings_mute_duration, prefs.muteDurationSec)
+                    XiaodouWidgetProvider.refreshAll(requireContext())
+                    dialog.dismiss()
+                }
+                .setNegativeButton(R.string.action_cancel, null)
+                .show()
+        }
+
         // AI 开关与阈值
         binding.switchAi.isChecked = prefs.aiEnabled
         binding.switchAi.setOnCheckedChangeListener { _, checked -> prefs.aiEnabled = checked }

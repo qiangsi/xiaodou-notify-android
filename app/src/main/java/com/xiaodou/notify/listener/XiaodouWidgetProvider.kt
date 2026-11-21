@@ -35,12 +35,18 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
                 app.prefs.filterPaused = !app.prefs.filterPaused
                 refreshAll(context)
             }
+            ACTION_SCENE -> {
+                val app = context.applicationContext as? XiaodouApp ?: return
+                com.xiaodou.notify.engine.SceneController.next(context, app.prefs)
+                refreshAll(context)
+            }
             ACTION_REFRESH -> refreshAll(context)
         }
     }
 
     companion object {
         const val ACTION_TOGGLE = "com.xiaodou.notify.widget.TOGGLE"
+        const val ACTION_SCENE = "com.xiaodou.notify.widget.SCENE"
         const val ACTION_REFRESH = "com.xiaodou.notify.widget.REFRESH"
 
         /** 主动请求刷新所有小部件（通知落库后、设置变更后调用） */
@@ -86,8 +92,10 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
             views.setTextColor(R.id.widget_filtered_label, subtext)
             views.setTextColor(R.id.widget_btn_history, accent)
             views.setTextColor(R.id.widget_btn_toggle, accent)
+            views.setTextColor(R.id.widget_btn_scene, accent)
             views.setInt(R.id.widget_btn_history, "setBackgroundResource", btnBg)
             views.setInt(R.id.widget_btn_toggle, "setBackgroundResource", btnBg)
+            views.setInt(R.id.widget_btn_scene, "setBackgroundResource", btnBg)
         }
 
         fun updateWidget(context: Context, mgr: AppWidgetManager, widgetId: Int) {
@@ -125,6 +133,10 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
                     R.id.widget_btn_toggle,
                     context.getString(if (paused) R.string.widget_paused else R.string.widget_active)
                 )
+                views.setTextViewText(
+                    R.id.widget_btn_scene,
+                    com.xiaodou.notify.engine.SceneController.name(context, app.prefs.sceneMode)
+                )
 
                 // 点击整块 / 「历史」按钮 → 打开 App
                 val open = Intent(context, MainActivity::class.java).apply {
@@ -144,6 +156,14 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
                 views.setOnClickPendingIntent(R.id.widget_btn_toggle, togglePi)
+
+                // 「情景模式」按钮 → 广播循环切换 常规→专注→睡眠→通勤
+                val scene = Intent(context, XiaodouWidgetProvider::class.java).apply { action = ACTION_SCENE }
+                val scenePi = PendingIntent.getBroadcast(
+                    context, 3, scene,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                views.setOnClickPendingIntent(R.id.widget_btn_scene, scenePi)
 
                 try { mgr.updateAppWidget(widgetId, views) } catch (e: Exception) { }
             }

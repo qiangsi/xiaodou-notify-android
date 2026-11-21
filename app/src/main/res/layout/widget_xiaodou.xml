@@ -95,5 +95,17 @@
             android:text="@string/widget_active"
             android:textColor="@color/widget_accent"
             android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/widget_btn_scene"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:background="@drawable/widget_btn_bg"
+            android:text="@string/scene_off"
+            android:textColor="@color/widget_accent"
+            android:textSize="12sp" />
     </LinearLayout>
 </LinearLayout>

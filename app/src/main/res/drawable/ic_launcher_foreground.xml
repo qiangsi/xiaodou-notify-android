@@ -4,7 +4,7 @@
     android:viewportWidth="108" android:viewportHeight="108">
     <!-- 小豆通知启动图标：消息管理(信件描边，左上) + 两粒豆(白色描边，右下) 对角组合。
          绿渐变底(colors.xml launcher_bg_*) + 纯描边矢量，无实心块/无高光。
-         与毛豆通知的信封+黄绿豆荚对角构图风格统一，仅豆荚换成两粒豆、底色换绿。 -->
+         与兄弟版的信封+豆荚对角构图风格统一，仅豆荚换成两粒豆、底色换绿。 -->
     <!-- 信封（左上，白色描边） -->
     <path
         android:fillColor="@android:color/transparent"

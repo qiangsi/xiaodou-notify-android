@@ -223,27 +223,85 @@ class StatsFragment : Fragment() {
      * 这类「情绪价值 + 可传播」的功能，比导出 CSV 之类事后查看型更有付费冲动。
      */
     private fun showWeeklyReport() {
-        if (lastTotal <= 0) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val dao = app.database.notificationDao()
+            val showFeedback = app.prefs.showFeedbackNotices
+            val since = System.currentTimeMillis() - 7 * 86_400_000L
+            val total = dao.countSinceVisible(since, showFeedback)
+            val filtered = dao.countFilteredSinceVisible(since, showFeedback)
+            val top = dao.packageRankVisible(since, showFeedback).firstOrNull()?.packageName
+            val topLabel = top?.let {
+                try {
+                    app.packageManager.getApplicationLabel(app.packageManager.getApplicationInfo(it, 0)).toString()
+                } catch (e: Exception) { it }
+            } ?: ""
+            withContext(Dispatchers.Main) { showWeeklyCard(total, filtered, topLabel) }
+        }
+    }
+
+    private fun showWeeklyCard(total: Int, filtered: Int, top: String) {
+        if (total <= 0) {
             android.widget.Toast.makeText(requireContext(), R.string.weekly_empty, android.widget.Toast.LENGTH_SHORT).show()
             return
         }
-        val ratio = if (lastTotal > 0) lastFiltered.toFloat() / lastTotal else 0f
-        // 清净指数：过滤占比映射到 60~99，挡得越多越清净
+        val ratio = filtered.toFloat() / total
         val score = (60 + ratio * 39).toInt().coerceIn(60, 99)
-        val top = lastTopApp.ifBlank { getString(R.string.app_name) }
-        val body = getString(R.string.weekly_body, lastFiltered, score, top)
+        val data = com.xiaodou.notify.util.WeeklyCard.Data(
+            filtered = filtered, total = total, score = score,
+            topApp = top.ifBlank { getString(R.string.app_name) },
+            title = getString(R.string.weekly_title),
+            subtitle = getString(R.string.weekly_subtitle),
+            footer = getString(R.string.weekly_footer)
+        )
+        val bmp = com.xiaodou.notify.util.WeeklyCard.render(data)
+        val uri = com.xiaodou.notify.util.WeeklyCard.saveAndShareUri(requireContext(), bmp)
+        val view = android.widget.ImageView(requireContext()).apply {
+            layoutParams = android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 0) }
+            adjustViewBounds = true
+            setImageBitmap(bmp)
+        }
+        val box = android.widget.LinearLayout(requireContext()).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            val pad = (16 * resources.displayMetrics.density).toInt()
+            setPadding(pad, pad, pad, 0)
+            addView(view)
+        }
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.weekly_title)
-            .setMessage(body)
+            .setView(box)
             .setPositiveButton(R.string.weekly_share) { _, _ ->
-                val send = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "$body\n\n—— 来自小豆通知")
+                runCatching {
+                    startActivity(Intent.createChooser(
+                        com.xiaodou.notify.util.WeeklyCard.shareIntent(requireContext(), uri),
+                        getString(R.string.weekly_share)
+                    ))
                 }
-                runCatching { startActivity(Intent.createChooser(send, getString(R.string.weekly_share))) }
             }
+            .setNeutralButton(R.string.weekly_save) { _, _ -> saveWeeklyToGallery(bmp) }
             .setNegativeButton(R.string.action_cancel, null)
             .show()
+    }
+
+    private fun saveWeeklyToGallery(bmp: android.graphics.Bitmap) {
+        val values = android.content.ContentValues().apply {
+            put(android.provider.MediaStore.Images.Media.DISPLAY_NAME, "qingjing_${System.currentTimeMillis()}.png")
+            put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/png")
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                put(android.provider.MediaStore.Images.Media.RELATIVE_PATH,
+                    android.os.Environment.DIRECTORY_PICTURES + "/XiaodouNotify")
+            }
+        }
+        val resolver = requireContext().contentResolver
+        val uri = resolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        if (uri == null) {
+            android.widget.Toast.makeText(requireContext(), R.string.weekly_save_fail, android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
+        resolver.openOutputStream(uri)?.use { bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it) }
+        android.widget.Toast.makeText(requireContext(), R.string.weekly_save_done, android.widget.Toast.LENGTH_SHORT).show()
     }
 
     private fun scopeMatch(result: String) = when (scope) {

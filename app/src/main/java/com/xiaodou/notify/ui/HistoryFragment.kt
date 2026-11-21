@@ -49,6 +49,8 @@ class HistoryFragment : Fragment() {
         const val FILTER_FILTERED = 2
         /** 已学习样本：用户手动标注过（marked != null）的通知，用于回归 AI 学习成果 */
         const val FILTER_LEARNED = 3
+        /** v1.7.5 待办收件箱：被推迟/手动加入的通知 */
+        const val FILTER_TODO = 4
 
         private const val ARG_FILTER = "init_filter"
 
@@ -85,6 +87,7 @@ class HistoryFragment : Fragment() {
                 R.id.chip_kept -> FILTER_KEPT
                 R.id.chip_filtered -> FILTER_FILTERED
                 R.id.chip_learned -> FILTER_LEARNED
+                R.id.chip_todo -> FILTER_TODO
                 else -> FILTER_ALL
             }
             applyList()
@@ -95,10 +98,11 @@ class HistoryFragment : Fragment() {
             FILTER_KEPT -> binding.chipKept.isChecked = true
             FILTER_FILTERED -> binding.chipFiltered.isChecked = true
             FILTER_LEARNED -> binding.chipLearned.isChecked = true
+            FILTER_TODO -> binding.chipTodo.isChecked = true
             else -> binding.chipAll.isChecked = true
         }
-        // 「已学习样本」在最右侧，确保跳转过来时能看见被选中的 chip
-        if (filter == FILTER_LEARNED) {
+        // 「已学习样本 / 待办」在右侧，确保跳转过来时能看见被选中的 chip
+        if (filter == FILTER_LEARNED || filter == FILTER_TODO) {
             binding.filterScroll.post { binding.filterScroll.fullScroll(View.FOCUS_RIGHT) }
         }
 
@@ -181,6 +185,10 @@ class HistoryFragment : Fragment() {
         if (filter == FILTER_KEPT) list = list.filter { it.result == Result.KEPT }
         if (filter == FILTER_FILTERED) list = list.filter { it.result != Result.KEPT }
         if (filter == FILTER_LEARNED) list = list.filter { it.marked != null }
+        if (filter == FILTER_TODO) {
+            val ids = app?.prefs?.todoIdSet() ?: emptySet()
+            list = list.filter { ids.contains(it.id) }
+        }
         if (selectedType != null) list = list.filter { it.category == selectedType }
         if (selectedDay != null) list = list.filter {
             SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(it.timestamp)) == selectedDay

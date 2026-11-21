@@ -319,6 +319,26 @@
     <string name="weekly_share">分享战绩</string>
     <string name="weekly_body">本周小豆通知为你挡下 %1$d 条骚扰，清净指数 %2$d 分。最吵的是「%3$s」。清净，是一种可以量化的自由。</string>
     <string name="weekly_empty">数据还不够，多用几天再生成周报吧</string>
+    <string name="weekly_subtitle">最近 7 天 · 仅统计本机数据</string>
+    <string name="weekly_footer">数据仅存本机 · 不上传不联网</string>
+    <string name="weekly_save">保存到相册</string>
+    <string name="weekly_save_done">已保存到相册</string>
+    <string name="weekly_save_fail">保存失败，请用分享</string>
+    <!-- v1.7.5 待办收件箱 -->
+    <string name="filter_todo">待办</string>
+    <string name="todo_add">加入待办</string>
+    <string name="todo_done">完成待办</string>
+    <string name="todo_add_toast">已加入待办，可在历史页「待办」查看</string>
+    <string name="todo_done_toast">已标记完成</string>
+    <!-- v1.7.5 情景模式 -->
+    <string name="scene_off">常规</string>
+    <string name="scene_focus">专注</string>
+    <string name="scene_sleep">睡眠</string>
+    <string name="scene_commute">通勤</string>
+    <string name="scene_title">情景模式</string>
+    <string name="scene_desc">一键组合过滤与静音，再点恢复原设置</string>
+    <string name="scene_pick">选择情景</string>
+    <string name="scene_current">当前：%1$s</string>
     <!-- FR-E4 桌面小部件 / 暂停过滤 -->
     <string name="settings_filter_paused">暂停过滤</string>
     <string name="settings_filter_paused_desc">开启后仅记录通知，不执行任何规则与 AI 过滤，桌面小部件可快捷切换</string>
