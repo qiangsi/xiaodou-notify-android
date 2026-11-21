@@ -63,7 +63,7 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
         }
 
         /** 按用户设置的深浅模式给 RemoteViews 着色，避免与 App 内主题不一致。 */
-        private fun applyWidgetTheme(context: Context, views: RemoteViews, dark: Boolean, colorIndex: Int) {
+        private fun applyWidgetTheme(context: Context, views: RemoteViews, dark: Boolean, colorIndex: Int, sceneMode: Int) {
             views.setInt(
                 R.id.widget_root, "setBackgroundResource",
                 if (dark) R.drawable.widget_bg_dark else R.drawable.widget_bg_light
@@ -96,6 +96,18 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
             views.setInt(R.id.widget_btn_history, "setBackgroundResource", btnBg)
             views.setInt(R.id.widget_btn_toggle, "setBackgroundResource", btnBg)
             views.setInt(R.id.widget_btn_scene, "setBackgroundResource", btnBg)
+            // v1.7.6 情景按钮：文案带 ▸ 提示可点，非默认场景用主色高亮
+            views.setTextViewText(
+                R.id.widget_btn_scene,
+                context.getString(
+                    R.string.widget_scene,
+                    com.xiaodou.notify.engine.SceneController.name(context, sceneMode)
+                )
+            )
+            views.setTextColor(
+                R.id.widget_btn_scene,
+                if (sceneMode != com.xiaodou.notify.engine.SceneController.OFF) accent else subtext
+            )
         }
 
         fun updateWidget(context: Context, mgr: AppWidgetManager, widgetId: Int) {
@@ -109,7 +121,7 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
                 ThemeHelper.MODE_LIGHT -> false
                 else -> systemDark
             }
-            applyWidgetTheme(context, views, dark, app.prefs.themeColor)
+            applyWidgetTheme(context, views, dark, app.prefs.themeColor, app.prefs.sceneMode)
 
             // 今日 00:00 起点
             val cal = Calendar.getInstance().apply {
@@ -133,10 +145,7 @@ class XiaodouWidgetProvider : AppWidgetProvider() {
                     R.id.widget_btn_toggle,
                     context.getString(if (paused) R.string.widget_paused else R.string.widget_active)
                 )
-                views.setTextViewText(
-                    R.id.widget_btn_scene,
-                    com.xiaodou.notify.engine.SceneController.name(context, app.prefs.sceneMode)
-                )
+                // 情景按钮文案与高亮已在 applyWidgetTheme 中按当前场景设置
 
                 // 点击整块 / 「历史」按钮 → 打开 App
                 val open = Intent(context, MainActivity::class.java).apply {

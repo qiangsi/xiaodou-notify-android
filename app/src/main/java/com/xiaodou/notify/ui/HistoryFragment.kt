@@ -82,6 +82,11 @@ class HistoryFragment : Fragment() {
             }
         })
 
+        // v1.7.6 待办收件箱首屏入口：复用统计页下钻的同一套筛选机制
+        binding.cardTodoEntry.setOnClickListener {
+            (activity as? MainActivity)?.openHistoryWithFilter(FILTER_TODO)
+        }
+
         binding.chipFilter.setOnCheckedChangeListener { _, checkedId ->
             filter = when (checkedId) {
                 R.id.chip_kept -> FILTER_KEPT
@@ -212,6 +217,18 @@ class HistoryFragment : Fragment() {
             R.string.history_count_summary, kept, filtered,
             scopeAll.count { it.marked != null }
         )
+
+        // v1.7.6 待办入口：副文案与角标随待办数量实时变化，0 项时弱化显示
+        val todoIds = app?.prefs?.todoIdSet() ?: emptySet()
+        val todoCount = scopeAll.count { todoIds.contains(it.id) }
+        binding.tvTodoEntrySub.text = if (todoCount > 0)
+            getString(R.string.todo_inbox_pending, todoCount)
+        else getString(R.string.todo_inbox_empty)
+        binding.tvTodoBadge.visibility = if (todoCount > 0) View.VISIBLE else View.GONE
+        if (todoCount > 0) {
+            binding.tvTodoBadge.text = if (todoCount > 99) "99+" else todoCount.toString()
+        }
+        binding.cardTodoEntry.alpha = if (todoCount > 0) 1f else 0.72f
 
         binding.tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
         binding.tvEmpty.text = if (selectedDay != null || selectedType != null ||

@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -192,10 +193,16 @@ class SettingsFragment : Fragment() {
             refreshStatus()
         }
 
-        // v1.7.5 情景模式：一键组合过滤与静音，再点恢复原设置
+        // v1.7.6 情景模式：动态文案 + 非默认场景主色高亮，让"正在生效"一眼可见
         fun refreshSceneLabel() {
             val name = com.xiaodou.notify.engine.SceneController.name(requireContext(), prefs.sceneMode)
-            binding.tvSceneValue.text = getString(R.string.scene_current, name)
+            binding.tvSceneValue.text = getString(R.string.scene_current_tap, name)
+            val active = prefs.sceneMode != com.xiaodou.notify.engine.SceneController.OFF
+            binding.tvSceneValue.setTextColor(
+                if (active) ThemeHelper.resolveColor(
+                    requireContext(), androidx.appcompat.R.attr.colorPrimary, R.color.primary
+                ) else ContextCompat.getColor(requireContext(), R.color.text_secondary)
+            )
         }
         refreshSceneLabel()
         binding.rowScene.setOnClickListener {

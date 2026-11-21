@@ -144,6 +144,91 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- v1.7.6 待办收件箱入口：与历史页同款卡片，点击直达待办筛选 -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/stat_todo_entry"
+            style="@style/Widget.Xiaodou.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:strokeColor="?attr/colorPrimary">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="12dp">
+
+                <FrameLayout
+                    android:layout_width="@dimen/icon_tile"
+                    android:layout_height="@dimen/icon_tile">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_icon_tile"
+                        android:contentDescription="@null"
+                        android:padding="@dimen/icon_tile_padding"
+                        android:src="@drawable/ic_check"
+                        android:tint="?attr/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/tv_stat_todo_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:layout_marginEnd="-4dp"
+                        android:background="@drawable/bg_badge_kept"
+                        android:gravity="center"
+                        android:minWidth="18dp"
+                        android:paddingStart="3dp"
+                        android:paddingEnd="3dp"
+                        android:textColor="@color/badge_kept_text"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/todo_inbox_title"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_stat_todo_sub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/todo_inbox_empty"
+                        android:textAppearance="@style/TextAppearance.Xiaodou.Caption" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron_right"
+                    android:tint="@color/text_tertiary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- 统计窗口 -->
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_window"

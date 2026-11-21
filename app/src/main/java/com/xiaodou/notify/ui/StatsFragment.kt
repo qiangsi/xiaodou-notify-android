@@ -22,6 +22,7 @@ import com.xiaodou.notify.util.ProHelper
 import com.xiaodou.notify.util.ProSheet
 import com.xiaodou.notify.util.ThemeHelper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -106,6 +107,10 @@ class StatsFragment : Fragment() {
         binding.statLearned.setOnClickListener {
             (activity as? MainActivity)?.openHistoryWithFilter(HistoryFragment.FILTER_LEARNED)
         }
+        // v1.7.6 待办收件箱入口：与历史页卡片共用同一个下钻通道
+        binding.statTodoEntry.setOnClickListener {
+            (activity as? MainActivity)?.openHistoryWithFilter(HistoryFragment.FILTER_TODO)
+        }
         refresh()
     }
 
@@ -124,6 +129,16 @@ class StatsFragment : Fragment() {
             val since = System.currentTimeMillis() - days * 86_400_000L
             val raw = dao.dailyRawVisible(since, showFeedback) // timestamp + result
             val learned = dao.countLearnedVisible(showFeedback)
+
+            // v1.7.6 待办入口：与历史页保持同样的可见口径（默认不含系统操作提示）
+            val todoIds = app.prefs.todoIdSet()
+            val todoCount = if (todoIds.isEmpty()) 0 else {
+                val visible = dao.observeAll().first().let { rows ->
+                    if (showFeedback) rows
+                    else rows.filter { it.category != com.xiaodou.notify.engine.FeedbackNoticeFilter.CATEGORY }
+                }
+                visible.count { todoIds.contains(it.id) }
+            }
 
             // 排行：按口径取对应结果的应用分布（FR-S1 分口径查看）
             val rank = when (scope) {
@@ -167,6 +182,14 @@ class StatsFragment : Fragment() {
                 binding.tvTotal.text = total.toString()
                 binding.tvFiltered.text = filtered.toString()
                 binding.tvLearned.text = learned.toString()
+                binding.tvStatTodoSub.text = if (todoCount > 0)
+                    getString(R.string.todo_inbox_pending, todoCount)
+                else getString(R.string.todo_inbox_empty)
+                binding.tvStatTodoBadge.visibility = if (todoCount > 0) View.VISIBLE else View.GONE
+                if (todoCount > 0) {
+                    binding.tvStatTodoBadge.text = if (todoCount > 99) "99+" else todoCount.toString()
+                }
+                binding.statTodoEntry.alpha = if (todoCount > 0) 1f else 0.72f
                 // v1.6.0 留存周报素材
                 lastTotal = total
                 lastFiltered = filtered

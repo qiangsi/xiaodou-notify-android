@@ -189,7 +189,7 @@
     <string name="settings_mute_threshold">智能静音：%1$d 条 / %2$d 秒内</string>
     <string name="settings_mute_duration">静音时长：%1$d 秒</string>
     <string name="settings_retain_days">历史保留 %1$d 天</string>
-    <string name="settings_unlock_now">解除静音</string>
+    <string name="settings_unlock_now">立即恢复铃声</string>
     <string name="settings_unmuted">已恢复铃声</string>
     <string name="settings_app_lock">应用锁</string>
     <string name="settings_app_lock_desc">进入应用需指纹/面容验证</string>
@@ -330,6 +330,9 @@
     <string name="todo_done">完成待办</string>
     <string name="todo_add_toast">已加入待办，可在历史页「待办」查看</string>
     <string name="todo_done_toast">已标记完成</string>
+    <string name="todo_inbox_title">待办收件箱</string>
+    <string name="todo_inbox_pending">%1$d 项待处理</string>
+    <string name="todo_inbox_empty">暂无待办 · 点此查看</string>
     <!-- v1.7.5 情景模式 -->
     <string name="scene_off">常规</string>
     <string name="scene_focus">专注</string>
@@ -339,6 +342,8 @@
     <string name="scene_desc">一键组合过滤与静音，再点恢复原设置</string>
     <string name="scene_pick">选择情景</string>
     <string name="scene_current">当前：%1$s</string>
+    <string name="scene_current_tap">当前：%1$s · 点击切换</string>
+    <string name="widget_scene">情景 · %1$s ▸</string>
     <!-- FR-E4 桌面小部件 / 暂停过滤 -->
     <string name="settings_filter_paused">暂停过滤</string>
     <string name="settings_filter_paused_desc">开启后仅记录通知，不执行任何规则与 AI 过滤，桌面小部件可快捷切换</string>
@@ -351,6 +356,9 @@
     <string name="rules_subtitle">按顺序匹配，命中第一条即执行</string>
     <string name="stats_subtitle">近段时间的过滤效果与来源分布 · 点按上方数字查看明细</string>
     <string name="settings_filter">过滤</string>
+    <string name="settings_filter_notify">过滤与通知</string>
+    <string name="settings_ai_mute">AI 与静音</string>
+    <string name="settings_data">数据</string>
     <string name="rule_add">新建规则</string>
     <string name="rule_condition">匹配条件</string>
     <string name="settings_lock_now">立即锁定</string>

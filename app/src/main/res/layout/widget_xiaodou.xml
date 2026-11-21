@@ -82,7 +82,7 @@
             android:background="@drawable/widget_btn_bg"
             android:text="@string/tab_history"
             android:textColor="@color/widget_accent"
-            android:textSize="12sp" />
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/widget_btn_toggle"
@@ -94,7 +94,7 @@
             android:background="@drawable/widget_btn_bg"
             android:text="@string/widget_active"
             android:textColor="@color/widget_accent"
-            android:textSize="12sp" />
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/widget_btn_scene"
@@ -106,6 +106,6 @@
             android:background="@drawable/widget_btn_bg"
             android:text="@string/scene_off"
             android:textColor="@color/widget_accent"
-            android:textSize="12sp" />
+            android:textSize="11sp" />
     </LinearLayout>
 </LinearLayout>

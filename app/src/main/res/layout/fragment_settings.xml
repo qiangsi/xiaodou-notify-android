@@ -210,16 +210,16 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ============ 权限 ============ -->
+        
+        <!-- ============ 2 运行状态：权限 + 自检 + 保活 ============ -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="22dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/settings_permission"
+            android:text="@string/settings_status"
             android:textAppearance="@style/TextAppearance.Xiaodou.Section" />
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_permission"
             style="@style/Widget.Xiaodou.Card"
@@ -278,16 +278,6 @@
                     android:tint="@color/text_tertiary" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <!-- ============ 运行状态自检 ============ -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/settings_status"
-            android:textAppearance="@style/TextAppearance.Xiaodou.Section" />
 
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Xiaodou.Card"
@@ -405,6 +395,41 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="8dp"
                     android:text="@string/diag_entry" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Xiaodou.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="10dp">
+        <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_battery_opt"
+                    style="@style/Widget.Xiaodou.RowButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/row_height"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/settings_battery_opt"
+                    app:icon="@drawable/ic_battery"
+                    app:iconTint="?attr/colorPrimary" />
+        <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="62dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/settings_battery_opt_desc"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="12sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -556,16 +581,17 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ============ 过滤 ============ -->
+        
+
+        <!-- ============ 4 过滤与通知：暂停 + 情景 + 通知偏好 ============ -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="22dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/settings_filter"
+            android:text="@string/settings_filter_notify"
             android:textAppearance="@style/TextAppearance.Xiaodou.Section" />
-
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Xiaodou.Card"
             android:layout_width="match_parent"
@@ -623,7 +649,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ============ v1.7.5 情景模式 ============ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -651,7 +676,7 @@
                     android:background="@drawable/bg_icon_tile"
                     android:contentDescription="@null"
                     android:padding="@dimen/icon_tile_padding"
-                    android:src="@drawable/ic_sparkle"
+                    android:src="@drawable/ic_moon"
                     android:tint="?attr/colorPrimary" />
 
                 <LinearLayout
@@ -680,16 +705,210 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ============ 离线 AI ============ -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Xiaodou.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+        <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/row_height"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_tile"
+                        android:layout_height="@dimen/icon_tile"
+                        android:background="@drawable/bg_icon_tile"
+                        android:contentDescription="@null"
+                        android:padding="@dimen/icon_tile_padding"
+                        android:src="@drawable/ic_refresh"
+                        android:tint="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="@string/settings_undo"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_undo"
+                        style="@style/Widget.Xiaodou.Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="62dp"
+                    android:background="@color/divider" />
+
+        <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/row_height"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_tile"
+                        android:layout_height="@dimen/icon_tile"
+                        android:background="@drawable/bg_icon_tile"
+                        android:contentDescription="@null"
+                        android:padding="@dimen/icon_tile_padding"
+                        android:src="@drawable/ic_copy"
+                        android:tint="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="@string/settings_code_copy"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_codecopy"
+                        style="@style/Widget.Xiaodou.Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="62dp"
+                    android:background="@color/divider" />
+
+        <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_tile"
+                        android:layout_height="@dimen/icon_tile"
+                        android:background="@drawable/bg_icon_tile"
+                        android:contentDescription="@null"
+                        android:padding="@dimen/icon_tile_padding"
+                        android:src="@drawable/ic_sparkle"
+                        android:tint="?attr/colorPrimary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_show_feedback"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/settings_show_feedback_desc"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_show_feedback"
+                        style="@style/Widget.Xiaodou.Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="62dp"
+                    android:background="@color/divider" />
+
+        <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_exclude_apps"
+                    style="@style/Widget.Xiaodou.RowButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/row_height"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/settings_exclude_apps"
+                    app:icon="@drawable/ic_apps" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="62dp"
+                    android:background="@color/divider" />
+
+        <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/row_height"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_tile"
+                        android:layout_height="@dimen/icon_tile"
+                        android:background="@drawable/bg_icon_tile"
+                        android:contentDescription="@null"
+                        android:padding="@dimen/icon_tile_padding"
+                        android:src="@drawable/ic_funnel"
+                        android:tint="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="@string/settings_exclude_mode"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_exclude_mode"
+                        style="@style/Widget.Xiaodou.Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ============ 5 AI 与静音：过滤模型 + 智能静音 ============ -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="22dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/settings_ai"
+            android:text="@string/settings_ai_mute"
             android:textAppearance="@style/TextAppearance.Xiaodou.Section" />
-
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Xiaodou.Card"
             android:layout_width="match_parent"
@@ -765,75 +984,38 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:max="100" />
+
+        <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reset_model"
+                    style="@style/Widget.Xiaodou.RowButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/row_height"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/settings_reset_model"
+                    app:icon="@drawable/ic_refresh" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <!-- ============ 通知增强 ============ -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="22dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/settings_enhance"
-            android:textAppearance="@style/TextAppearance.Xiaodou.Section" />
 
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Xiaodou.Card"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/row_height"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
-
-                    <ImageView
-                        android:layout_width="@dimen/icon_tile"
-                        android:layout_height="@dimen/icon_tile"
-                        android:background="@drawable/bg_icon_tile"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/icon_tile_padding"
-                        android:src="@drawable/ic_refresh"
-                        android:tint="?attr/colorPrimary" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="@string/settings_undo"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switch_undo"
-                        style="@style/Widget.Xiaodou.Switch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="62dp"
-                    android:background="@color/divider" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/row_height"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp">
 
                     <ImageView
                         android:layout_width="@dimen/icon_tile"
@@ -866,111 +1048,7 @@
                     android:layout_marginStart="62dp"
                     android:background="@color/divider" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/row_height"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
-
-                    <ImageView
-                        android:layout_width="@dimen/icon_tile"
-                        android:layout_height="@dimen/icon_tile"
-                        android:background="@drawable/bg_icon_tile"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/icon_tile_padding"
-                        android:src="@drawable/ic_copy"
-                        android:tint="?attr/colorPrimary" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="@string/settings_code_copy"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switch_codecopy"
-                        style="@style/Widget.Xiaodou.Switch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="62dp"
-                    android:background="@color/divider" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp">
-
-                    <ImageView
-                        android:layout_width="@dimen/icon_tile"
-                        android:layout_height="@dimen/icon_tile"
-                        android:background="@drawable/bg_icon_tile"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/icon_tile_padding"
-                        android:src="@drawable/ic_sparkle"
-                        android:tint="?attr/colorPrimary" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_show_feedback"
-                            android:textColor="@color/text_primary"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="@string/settings_show_feedback_desc"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="11.5sp" />
-                    </LinearLayout>
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switch_show_feedback"
-                        style="@style/Widget.Xiaodou.Switch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- 智能静音配置 / 解除（FR-E2） -->
-        <com.google.android.material.card.MaterialCardView
-            style="@style/Widget.Xiaodou.Card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
+        <TextView
                     android:id="@+id/tv_mute_cfg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -995,7 +1073,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ============ 隐私与数据 ============ -->
+        <!-- ============ 6 隐私与安全：本地加密 + 应用锁 ============ -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -1004,7 +1082,6 @@
             android:layout_marginBottom="8dp"
             android:text="@string/settings_privacy"
             android:textAppearance="@style/TextAppearance.Xiaodou.Section" />
-
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Xiaodou.Card"
             android:layout_width="match_parent"
@@ -1074,70 +1151,11 @@
                     android:text="@string/settings_export_csv"
                     app:icon="@drawable/ic_download" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_exclude_apps"
-                    style="@style/Widget.Xiaodou.RowButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/row_height"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:text="@string/settings_exclude_apps"
-                    app:icon="@drawable/ic_apps" />
+                
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="62dp"
-                    android:background="@color/divider" />
+                
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/row_height"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
-
-                    <ImageView
-                        android:layout_width="@dimen/icon_tile"
-                        android:layout_height="@dimen/icon_tile"
-                        android:background="@drawable/bg_icon_tile"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/icon_tile_padding"
-                        android:src="@drawable/ic_funnel"
-                        android:tint="?attr/colorPrimary" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="@string/settings_exclude_mode"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switch_exclude_mode"
-                        style="@style/Widget.Xiaodou.Switch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_reset_model"
-                    style="@style/Widget.Xiaodou.RowButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/row_height"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:text="@string/settings_reset_model"
-                    app:icon="@drawable/ic_refresh" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="62dp"
-                    android:background="@color/divider" />
+                
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -1356,34 +1374,23 @@
                     app:icon="@drawable/ic_lock"
                     app:iconTint="?attr/colorPrimary" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="62dp"
-                    android:background="@color/divider" />
+                
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_battery_opt"
-                    style="@style/Widget.Xiaodou.RowButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/row_height"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:text="@string/settings_battery_opt"
-                    app:icon="@drawable/ic_battery"
-                    app:iconTint="?attr/colorPrimary" />
+                
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="62dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="@string/settings_battery_opt_desc"
-                    android:textColor="@color/text_tertiary"
-                    android:textSize="12sp" />
+                
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- ============ 7 数据 ============ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/settings_data"
+            android:textAppearance="@style/TextAppearance.Xiaodou.Section" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_clear"
             style="@style/Widget.Xiaodou.DangerButton"
@@ -1483,4 +1490,4 @@
                 android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+        </ScrollView>
