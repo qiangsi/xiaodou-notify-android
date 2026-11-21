@@ -220,7 +220,7 @@ class SettingsFragment : Fragment() {
         binding.tvMuteCfg.setOnClickListener { showNumberPicker("触发条数", prefs.muteThreshold, 2..100) { prefs.muteThreshold = it; refreshMuteCfg() } }
         binding.tvMuteDuration.setOnClickListener { showNumberPicker("静音时长(秒)", prefs.muteDurationSec, 5..600) { prefs.muteDurationSec = it; refreshMuteCfg() } }
         binding.btnUnmute.setOnClickListener {
-            ActionExecutor.unmute(requireContext())
+            ActionExecutor.unmute(requireContext(), prefs)
             Toast.makeText(requireContext(), R.string.settings_unmuted, Toast.LENGTH_SHORT).show()
         }
 

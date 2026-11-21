@@ -3,7 +3,7 @@
 **小豆通知是「毛豆通知」的无成就轻量独立版**：通知核心能力完全一致，但移除整套成就系统——没有成就定义、进度记录、达成判定，也没有成就入口。适合只想要安静的通知管家、不需要游戏化激励的用户。
 
 - **技术栈**：Kotlin + Jetpack Room + Material 3 + 协程 + ViewBinding
-- **版本**：**v1.0.0**（versionCode 1）· 最低 Android 8.0（API 26），目标 Android 15（API 35）
+- **版本**：**v1.0.1**（versionCode 2）· 修复智能静音 · 最低 Android 8.0（API 26），目标 Android 15（API 35）
 - **隐私**：通知内容 AES-256-GCM 加密存本地（密钥在 Android Keystore），零上传；唯一外发通道是用户显式配置的 Webhook
 - **包名**：`com.xiaodou.notify`（与毛豆通知不同，可同时安装、数据互不干扰）
 
@@ -35,9 +35,16 @@ XiaodouNotify/
 │   ├── layout/                # 仅基础通知页面（无成就布局）
 │   ├── menu/bottom_nav_menu.xml  # 四个入口，无成就入口
 │   └── values/                # 应用名「小豆通知」，无成就字符串
-├── app/build.gradle.kts       # applicationId=com.xiaodou.notify，versionCode=1
+├── app/build.gradle.kts       # applicationId=com.xiaodou.notify，versionCode=2
 └── README.md
 ```
+
+## 更新记录
+
+### v1.0.1 · 修复智能静音（2026-11-21）
+- 修复高频通知重复触发后可能永久静音、点「解除静音」后旧任务把静音写回，以及静音期间来电被错过的问题。
+- 原铃声档只记录一次，重复触发只延长截止时间；静音状态持久化，回前台 / 进程重启后按到期时刻恢复。来电立即响铃并恢复原档，通话结束后不会重新静音；用户手动改铃声时以用户选择为准。来电识别无需 `READ_PHONE_STATE` 权限。
+- versionCode 2，沿用 debug.keystore 可覆盖安装，数据不丢。
 
 ## 构建
 

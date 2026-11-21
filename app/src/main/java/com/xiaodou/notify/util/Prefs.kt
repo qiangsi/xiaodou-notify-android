@@ -78,6 +78,21 @@ class Prefs(context: Context) {
         get() = sp.getInt(KEY_MUTE_DURATION, 30)
         set(value) = sp.edit().putInt(KEY_MUTE_DURATION, value).apply()
 
+    /** v1.7.1：静音发起前的铃声模式，-1=当前没有由本模块发起的静音 */
+    var muteOriginalMode: Int
+        get() = sp.getInt(KEY_MUTE_ORIGINAL_MODE, -1)
+        set(value) = sp.edit().putInt(KEY_MUTE_ORIGINAL_MODE, value).apply()
+
+    /** v1.7.1：静音到期时刻（epoch ms），0=无进行中静音。进程重启后据此恢复 */
+    var muteUntil: Long
+        get() = sp.getLong(KEY_MUTE_UNTIL, 0L)
+        set(value) = sp.edit().putLong(KEY_MUTE_UNTIL, value).apply()
+
+    /** v1.7.1：静音来源（smart/rule），仅用于诊断，不参与判定 */
+    var muteSource: String
+        get() = sp.getString(KEY_MUTE_SOURCE, "") ?: ""
+        set(value) = sp.edit().putString(KEY_MUTE_SOURCE, value).apply()
+
     // —— FR-E5 应用锁 ——
     var appLockEnabled: Boolean
         get() = sp.getBoolean(KEY_APP_LOCK, false)
@@ -288,6 +303,9 @@ class Prefs(context: Context) {
         private const val KEY_MUTE_THRESHOLD = "mute_threshold"
         private const val KEY_MUTE_WINDOW = "mute_window_sec"
         private const val KEY_MUTE_DURATION = "mute_duration_sec"
+        private const val KEY_MUTE_ORIGINAL_MODE = "mute_original_mode"
+        private const val KEY_MUTE_UNTIL = "mute_until"
+        private const val KEY_MUTE_SOURCE = "mute_source"
         private const val KEY_APP_LOCK = "app_lock"
         private const val KEY_APP_LOCK_TIMEOUT = "app_lock_timeout_min"
         private const val KEY_LAST_UNLOCK = "last_unlock_at"

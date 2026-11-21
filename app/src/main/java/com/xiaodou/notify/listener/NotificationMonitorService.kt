@@ -16,6 +16,7 @@ import com.xiaodou.notify.data.NotificationEntity
 import com.xiaodou.notify.data.Result
 import com.xiaodou.notify.engine.ActionExecutor
 import com.xiaodou.notify.engine.MatchContext
+import com.xiaodou.notify.engine.MuteController
 import com.xiaodou.notify.engine.RuleEngine
 import com.xiaodou.notify.engine.SpamScorer
 import com.xiaodou.notify.util.DiagnosticProbe
@@ -134,6 +135,8 @@ class NotificationMonitorService : NotificationListenerService() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        // v1.7.1：监听服务重建时同样对齐静音状态，覆盖「只有服务存活、无 Activity」的场景
+        (applicationContext as? XiaodouApp)?.let { MuteController.recoverIfNeeded(this, it.prefs) }
     }
 
     override fun onDestroy() {

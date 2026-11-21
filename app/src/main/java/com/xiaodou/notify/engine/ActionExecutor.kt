@@ -1,19 +1,15 @@
 package com.xiaodou.notify.engine
 
-import android.app.NotificationManager
 import android.content.Context
-import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import com.xiaodou.notify.XiaodouApp
 import com.xiaodou.notify.data.Actions
 import com.xiaodou.notify.data.NotificationEntity
 import com.xiaodou.notify.data.Result
 import com.xiaodou.notify.listener.NotificationBridge
 import com.xiaodou.notify.util.Prefs
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -84,12 +80,10 @@ object ActionExecutor {
     }
 
     private fun muteBriefly(context: Context, param: String) {
-        val seconds = param.toIntOrNull()?.coerceIn(1, 60) ?: 5
-        val am = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager ?: return
-        @Suppress("DEPRECATION")
-        val old = am.ringerMode
-        am.ringerMode = AudioManager.RINGER_MODE_SILENT
-        handler.postDelayed({ am.ringerMode = old }, TimeUnit.SECONDS.toMillis(seconds.toLong()))
+        val seconds = param.toIntOrNull()?.coerceIn(1, 600) ?: 5
+        val prefs = (context.applicationContext as? XiaodouApp)?.prefs ?: return
+        // v1.7.1：统一交给 MuteController，避免「重复触发把 SILENT 当原模式」导致永久静音
+        MuteController.mute(context, seconds, prefs, "rule")
     }
 
     private fun snooze(context: Context, entity: NotificationEntity, param: String, title: String, text: String) {
@@ -115,32 +109,9 @@ object ActionExecutor {
     }
 
     /** 智能静音：短时间内同 App 高频通知时临时静音（阈值/窗口/时长均可配 FR-E2） */
-    private val recentTimes = mutableMapOf<String, MutableList<Long>>()
+    fun shouldSmartMute(context: Context, pkg: String, prefs: Prefs): Boolean =
+        MuteController.shouldSmartMute(context, pkg, prefs)
 
-    fun shouldSmartMute(context: Context, pkg: String, prefs: Prefs): Boolean {
-        if (!prefs.smartMuteEnabled) return false
-        val now = System.currentTimeMillis()
-        val windowMs = prefs.muteWindowSec.coerceIn(5, 3600) * 1000L
-        val threshold = prefs.muteThreshold.coerceIn(2, 100)
-        val list = recentTimes.getOrPut(pkg) { mutableListOf() }
-        list.add(now)
-        list.removeAll { now - it > windowMs }
-        // 防止 map 无限增长：清理超过 1 小时无活动的包
-        if (recentTimes.size > 200) {
-            recentTimes.entries.removeAll { it.value.isEmpty() || now - (it.value.maxOrNull() ?: 0L) > 3_600_000 }
-        }
-        if (list.size >= threshold) {
-            muteBriefly(context, prefs.muteDurationSec.coerceIn(5, 600).toString())
-            list.clear()
-            return true
-        }
-        return false
-    }
-
-    /** 用户手动提前解除全局静音（FR-E2） */
-    fun unmute(context: Context) {
-        val am = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager ?: return
-        @Suppress("DEPRECATION")
-        am.ringerMode = AudioManager.RINGER_MODE_NORMAL
-    }
+    /** 用户手动提前解除全局静音（FR-E2）：撤销挂起任务并恢复到静音前的模式 */
+    fun unmute(context: Context, prefs: Prefs) = MuteController.unmute(context, prefs)
 }
