@@ -2,33 +2,39 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-    <!-- 小豆通知启动图标：单粒豆芽。与蓝底铃铛的兄弟版本形成明显区分，
-         沿用同一套 108dp 视口、中心 66dp 安全区与白色圆润矢量语言。 -->
-    <!-- 豆身 -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,40 C67,40 77,49 77,60 C77,71 67,80 54,80 C41,80 31,71 31,60 C31,49 41,40 54,40 Z" />
-    <!-- 豆芽茎 -->
+    <!-- 小豆通知启动图标：消息管理(信件描边，左上) + 两粒豆(白色描边，右下) 对角组合。
+         绿渐变底(colors.xml launcher_bg_*) + 纯描边矢量，无实心块/无高光。
+         与毛豆通知的信封+黄绿豆荚对角构图风格统一，仅豆荚换成两粒豆、底色换绿。 -->
+    <!-- 信封（左上，白色描边） -->
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M54,41 L54,28"
+        android:pathData="M28,26 h26 v21 h-26 z"
         android:strokeColor="#FFFFFF"
-        android:strokeWidth="3.6"
-        android:strokeLineCap="round" />
-    <!-- 左子叶 -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,34 C46,24 35,27 37,34 C39,41 48,40 54,34 Z" />
-    <!-- 右子叶 -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,34 C62,24 73,27 71,34 C69,41 60,40 54,34 Z" />
-    <!-- 薄荷色弧线：与兄弟版本同款点缀色，保持风格呼应 -->
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- 信封翻盖 V 形折线 -->
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M45,58c2.6,3.2 6,4.8 10,4.8"
-        android:strokeColor="#8FD9B4"
-        android:strokeAlpha="0.55"
-        android:strokeWidth="2.4"
-        android:strokeLineCap="round" />
+        android:pathData="M28,26 l13,9.7 l13,-9.7"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- 后豆（右上，白色描边） -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M67,56.6 C70.2,56.6 73,59.4 73,62.7 C73,66 70.2,68.8 67,68.8 C63.6,68.8 60.9,66 60.9,62.7 C60.9,59.4 63.6,56.6 67,56.6 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- 前豆（左下，白色描边） -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M57,59.9 C61.5,59.9 64.8,63.2 64.8,67.7 C64.8,72 61.5,75.3 57,75.3 C52.6,75.3 49.3,72 49.3,67.7 C49.3,63.2 52.6,59.9 57,59.9 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>
