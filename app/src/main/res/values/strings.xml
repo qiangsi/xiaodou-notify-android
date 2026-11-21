@@ -258,7 +258,10 @@
     <string name="pro_dialog_benefits">Pro 权益：\n· 重要通知守护：白名单绝不误杀，可二次强提醒\n· 验证码保险箱：所有码自动归档，划掉也能找回\n· 清净周报：战绩卡一键生成、可分享\n· 另含：导出全部历史 / 无限历史保留 / 30 天统计\n\n周卡 ¥1（7 天）· 永久 ¥18 一次买断\n点「获取激活码」查看付款方式，拿到码后输入下方即可解锁。</string>
     <string name="pro_activate">激活</string>
     <string name="pro_activate_ok">激活成功，Pro 已解锁</string>
-    <string name="pro_activate_fail">激活码无效，请核对后重试</string>
+    <string name="pro_activate_fail">激活码无效，请核对后重试（区分大小写）</string>
+    <string name="pro_activate_expired">这张周卡已过期（自签发日起 7 天），请重新获取新激活码</string>
+    <string name="pro_change_code">更换激活码</string>
+    <string name="pro_sheet_expired_hint">⚠ 上次的激活已到期，请粘贴新激活码；旧的周卡码无法再次激活。</string>
     <string name="pro_deactivate">已激活 Pro，点此可查看状态</string>
     <string name="pro_free_locked">此功能需 Pro，点此解锁</string>
 

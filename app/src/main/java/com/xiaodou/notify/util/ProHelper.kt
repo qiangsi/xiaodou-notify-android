@@ -20,7 +20,8 @@ object ProHelper {
         val valid: Boolean,
         val forever: Boolean,
         val expireAt: Long,
-        val typeLabel: String
+        val typeLabel: String,
+        val expired: Boolean = false
     )
 
     /** 社区版不含授权内核，任何激活码都无法校验通过。 */

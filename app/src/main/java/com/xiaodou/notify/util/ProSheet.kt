@@ -38,10 +38,13 @@ object ProSheet {
         show(context, prefs, featureName, onActive)
     }
 
-    /** 展示解锁面板。已激活时改为展示状态，不重复激活。 */
-    fun show(context: Context, prefs: Prefs, featureName: String = "", onSuccess: (() -> Unit)? = null) {
-        if (ProHelper.isActive(prefs)) {
-            showStatus(context, prefs)
+    /** 展示解锁面板。已激活时改为展示状态（并保留「更换激活码」入口），不重复激活。 */
+    fun show(
+        context: Context, prefs: Prefs, featureName: String = "",
+        onSuccess: (() -> Unit)? = null, forceInput: Boolean = false
+    ) {
+        if (ProHelper.isActive(prefs) && !forceInput) {
+            showStatus(context, prefs, onSuccess)
             return
         }
         val d = context.resources.displayMetrics.density
@@ -96,12 +99,26 @@ object ProSheet {
             setPadding(0, dp(8), 0, dp(2))
             setOnClickListener { showBuy(context) }
         })
+        // v1.7.6 修复：曾激活过但已到期时，必须明确告知并阻止旧码回写，
+        // 否则「激活成功」提示会与卡片上的「已到期」状态互相打架。
+        if (prefs.proActivated && !ProHelper.isActive(prefs)) {
+            root.addView(TextView(context).apply {
+                text = context.getString(R.string.pro_sheet_expired_hint)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                setTextColor(primary)
+                setTypeface(typeface, Typeface.BOLD)
+                setPadding(0, dp(2), 0, dp(6))
+            })
+        }
+
         val input = EditText(context).apply {
             hint = context.getString(R.string.pro_dialog_hint)
             // v1.6.1：激活码内含区分大小写的 Base64URL，不能再强制键盘大写
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             setSingleLine(true)
-            setText(prefs.proCode)
+            // 始终从空框开始：曾激活但已到期时若预填旧码，用户直接点激活只会
+            // 得到「已过期」而非成功，容易误以为入口失效；让用户明确粘贴新码。
+            setText("")
             setTextColor(textMain)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         }
@@ -131,6 +148,11 @@ object ProSheet {
                     Toast.makeText(context, R.string.pro_activate_ok, Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                     onSuccess?.invoke()
+                } else if (info.expired) {
+                    // 周卡已过期：码是真的，但权益已失效。不要把过期信息写回激活状态，
+                    // 并引导去获取新码；面板保持打开，用户可直接换码重试。
+                    Toast.makeText(context, R.string.pro_activate_expired, Toast.LENGTH_LONG).show()
+                    showBuy(context)
                 } else {
                     Toast.makeText(context, R.string.pro_activate_fail, Toast.LENGTH_SHORT).show()
                 }
@@ -139,16 +161,25 @@ object ProSheet {
         dialog.show()
     }
 
-    /** 已激活状态：展示权益与到期信息，不重复激活。 */
-    fun showStatus(context: Context, prefs: Prefs) {
+    /** 已激活状态：展示权益与到期信息，并提供「更换激活码」入口（解决找不到输入入口）。 */
+    fun showStatus(context: Context, prefs: Prefs, onSuccess: (() -> Unit)? = null) {
         MaterialAlertDialogBuilder(context)
             .setTitle(R.string.pro_card_title)
             .setMessage(
                 context.getString(R.string.pro_sheet_status, ProHelper.statusText(prefs)) +
                     "\n\n" + context.getString(R.string.pro_sheet_benefits)
             )
+            .setNeutralButton(R.string.pro_change_code) { _, _ -> showInput(context, prefs, onSuccess) }
             .setPositiveButton(R.string.action_ok, null)
             .show()
+    }
+
+    /**
+     * v1.7.6：无条件弹出「输入激活码」面板，供已激活用户换码/续期。
+     * show() 的激活壳与输入逻辑抽到此处，避免与 showStatus 的分支互相耦合。
+     */
+    private fun showInput(context: Context, prefs: Prefs, onSuccess: (() -> Unit)?) {
+        show(context, prefs, "", onSuccess, forceInput = true)
     }
 
     /**

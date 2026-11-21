@@ -77,7 +77,7 @@ class SettingsFragment : Fragment() {
         refreshProStatus()
         binding.cardPro.setOnClickListener {
             // v1.6.0：统一走 ProSheet，激活成功后刷新状态文案
-            ProSheet.show(requireContext(), prefs) { refreshProStatus() }
+            ProSheet.show(requireContext(), prefs, onSuccess = { refreshProStatus() })
         }
 
         // —— v1.6.0 重要通知守护（Pro）——
@@ -542,6 +542,8 @@ class SettingsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (_binding != null) {
+            // Pro 状态回到前台即刷新：周卡可能在后台到期、或刚从换码面板返回
+            binding.tvProStatus.text = ProHelper.statusText(app.prefs)
             binding.tvPermission.text = if (isListenerEnabled(requireContext()))
                 getString(R.string.settings_permission_status_on)
             else getString(R.string.settings_permission_status_off)
