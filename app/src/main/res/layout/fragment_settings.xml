@@ -1295,6 +1295,7 @@
             android:textAppearance="@style/TextAppearance.Xiaodou.Section" />
 
         <TextView
+            android:id="@+id/tvVersionSummary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"

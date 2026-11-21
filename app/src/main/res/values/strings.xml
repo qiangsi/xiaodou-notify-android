@@ -122,7 +122,8 @@
     <string name="settings_clear_confirm">确定清空全部通知历史和 AI 标注？此操作不可恢复。</string>
     <string name="settings_cleared">已清空</string>
     <string name="settings_about">关于</string>
-    <string name="settings_version">版本 1.6.0 · 数据仅存本机</string>
+    <string name="settings_version">版本 %1$s · 数据仅存本地</string>
+    <string name="version_unknown">未知版本</string>
     <string name="export_done">已导出到文档目录</string>
     <string name="export_failed">导出失败</string>
 
@@ -392,7 +393,7 @@
     <string name="entry_feedback">意见反馈</string>
     <string name="entry_update_failed">无法打开浏览器，请手动访问项目主页</string>
     <string name="entry_feedback_failed">无法打开浏览器，请手动访问项目 Issues 页面</string>
-    <string name="about_message">小豆通知 · 本地通知管家\n版本 %1$s\n\n所有通知仅在你的设备本地加密存储，不上传任何内容。\n支持通知历史、自定义过滤规则、离线 AI 骚扰识别、验证码提取与桌面小部件。\n\n开源项目：github.com/qiangsi/xiaodou-notify-android</string>
+    <string name="about_message">%2$s · 本地通知管家\n版本 %1$s\n\n数据仅存本地：所有通知仅在你的设备加密存储，不上传任何内容。\n支持通知历史、自定义过滤规则、离线 AI 骚扰识别、验证码提取与桌面小部件。\n\n开源项目：github.com/qiangsi/xiaodou-notify-android</string>
 
     <!-- v1.4.1 诊断探针 -->
     <string name="diag_title">通知诊断</string>

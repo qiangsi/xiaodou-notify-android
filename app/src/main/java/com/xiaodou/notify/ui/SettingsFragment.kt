@@ -66,6 +66,9 @@ class SettingsFragment : Fragment() {
         app = requireActivity().application as XiaodouApp
         val prefs = app.prefs
 
+        // 版本摘要与关于弹窗统一读取安装包的 versionName，避免文案里的版本号与构建版本漂移
+        binding.tvVersionSummary.text = getString(R.string.settings_version, appVersionName())
+
         // —— v1.5.0 Pro 买断：状态展示 + 激活入口 ——
         fun refreshProStatus() {
             binding.tvProStatus.text = ProHelper.statusText(prefs)
@@ -390,16 +393,20 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    /** 当前安装版本：设置页与关于页共用，失败时显示占位文案而不是过期版本号 */
+    private fun appVersionName(): String = try {
+        requireContext().packageManager
+            .getPackageInfo(requireContext().packageName, 0).versionName
+            ?: getString(R.string.version_unknown)
+    } catch (e: Exception) {
+        getString(R.string.version_unknown)
+    }
+
     /** 关于：版本、隐私说明与项目地址 */
     private fun showAboutDialog() {
-        val version = try {
-            requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName
-        } catch (e: Exception) {
-            "1.4.0"
-        }
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.entry_about)
-            .setMessage(getString(R.string.about_message, version))
+            .setMessage(getString(R.string.about_message, appVersionName(), getString(R.string.app_name)))
             .setPositiveButton(R.string.action_ok, null)
             .show()
     }

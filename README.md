@@ -3,7 +3,7 @@
 **小豆通知是「毛豆通知」的无成就轻量独立版**：通知核心能力完全一致，但移除整套成就系统——没有成就定义、进度记录、达成判定，也没有成就入口。适合只想要安静的通知管家、不需要游戏化激励的用户。
 
 - **技术栈**：Kotlin + Jetpack Room + Material 3 + 协程 + ViewBinding
-- **版本**：**v1.0.1**（versionCode 2）· 修复智能静音 · 最低 Android 8.0（API 26），目标 Android 15（API 35）
+- **版本**：**v1.0.2**（versionCode 3）· 设置页/关于页版本文案统一 · 最低 Android 8.0（API 26），目标 Android 15（API 35）
 - **隐私**：通知内容 AES-256-GCM 加密存本地（密钥在 Android Keystore），零上传；唯一外发通道是用户显式配置的 Webhook
 - **包名**：`com.xiaodou.notify`（与毛豆通知不同，可同时安装、数据互不干扰）
 
@@ -35,11 +35,16 @@ XiaodouNotify/
 │   ├── layout/                # 仅基础通知页面（无成就布局）
 │   ├── menu/bottom_nav_menu.xml  # 四个入口，无成就入口
 │   └── values/                # 应用名「小豆通知」，无成就字符串
-├── app/build.gradle.kts       # applicationId=com.xiaodou.notify，versionCode=2
+├── app/build.gradle.kts       # applicationId=com.xiaodou.notify，versionCode=3
 └── README.md
 ```
 
 ## 更新记录
+
+### v1.0.2 · 设置页/关于页版本文案统一（2026-11-21）
+- **版本号自动同步**：设置页不再硬编码「版本 1.6.0」，改为读取安装包 `versionName`；关于页共用同一来源，异常时显示「未知版本」，不再回退到过期版本号。
+- **产品名与隐私表述统一**：关于页产品名改用应用名资源（小豆通知），隐私说明统一为「数据仅存本地」，与设置页一致。
+- versionCode 3，沿用 debug.keystore 可覆盖安装，数据不丢。
 
 ### v1.0.1 · 修复智能静音（2026-11-21）
 - 修复高频通知重复触发后可能永久静音、点「解除静音」后旧任务把静音写回，以及静音期间来电被错过的问题。
