@@ -259,6 +259,8 @@
     <string name="pro_activate">激活</string>
     <string name="pro_activate_ok">激活成功，Pro 已解锁</string>
     <string name="pro_activate_fail">激活码无效，请核对后重试（区分大小写）</string>
+    <string name="pro_sheet_input_hint">↓ 在这里粘贴激活码</string>
+    <string name="pro_activate_empty">请先粘贴激活码</string>
     <string name="pro_activate_expired">这张周卡已过期（自签发日起 7 天），请重新获取新激活码</string>
     <string name="pro_change_code">更换激活码</string>
     <string name="pro_sheet_expired_hint">⚠ 上次的激活已到期，请粘贴新激活码；旧的周卡码无法再次激活。</string>

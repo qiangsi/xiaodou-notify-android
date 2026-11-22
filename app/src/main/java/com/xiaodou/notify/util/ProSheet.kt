@@ -55,7 +55,7 @@ object ProSheet {
 
         val root = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(22), dp(8), dp(22), dp(4))
+            setPadding(dp(22), dp(6), dp(22), dp(2))
         }
         if (featureName.isNotEmpty()) {
             root.addView(TextView(context).apply {
@@ -68,83 +68,92 @@ object ProSheet {
                 text = context.getString(R.string.pro_sheet_hook_sub)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f)
                 setTextColor(textSub)
-                setPadding(0, dp(2), 0, dp(10))
-            })
-        }
-        root.addView(TextView(context).apply {
-            text = context.getString(R.string.pro_sheet_benefits)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f)
-            setTextColor(textMain)
-            setLineSpacing(dp(5).toFloat(), 1f)
-        })
-        root.addView(TextView(context).apply {
-            text = context.getString(R.string.pro_sheet_price)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-            setTextColor(primary)
-            setTypeface(typeface, Typeface.BOLD)
-            setPadding(0, dp(12), 0, dp(2))
-        })
-        root.addView(TextView(context).apply {
-            text = context.getString(R.string.pro_sheet_how)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            setTextColor(textSub)
-        })
-        // v1.6.2：补齐「付款 -> 拿码」闭环。过去只写「向开发者索取」，
-        // 用户在这一步没有任何可执行入口，转化直接断掉。
-        root.addView(TextView(context).apply {
-            text = context.getString(R.string.pro_sheet_no_code)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
-            setTextColor(primary)
-            setTypeface(typeface, Typeface.BOLD)
-            setPadding(0, dp(8), 0, dp(2))
-            setOnClickListener { showBuy(context) }
-        })
-        // v1.7.6 修复：曾激活过但已到期时，必须明确告知并阻止旧码回写，
-        // 否则「激活成功」提示会与卡片上的「已到期」状态互相打架。
-        if (prefs.proActivated && !ProHelper.isActive(prefs)) {
-            root.addView(TextView(context).apply {
-                text = context.getString(R.string.pro_sheet_expired_hint)
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
-                setTextColor(primary)
-                setTypeface(typeface, Typeface.BOLD)
                 setPadding(0, dp(2), 0, dp(6))
             })
         }
-
+        // v1.7.8 关键修复：输入框必须放在面板最顶部。
+        // 旧版把输入框排在权益说明之后，内容一多就被挤出可见区域，
+        // 用户看不到输入框、只看到底部固定的「立即激活」，点下去校验空串 →
+        // 「激活码无效」，于是反馈「没有输入入口」。输入框置顶即可一眼看到。
+        if (prefs.proActivated && !ProHelper.isActive(prefs)) {
+            root.addView(TextView(context).apply {
+                text = context.getString(R.string.pro_sheet_expired_hint)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f)
+                setTextColor(primary)
+                setTypeface(typeface, Typeface.BOLD)
+                setPadding(0, dp(2), 0, dp(4))
+            })
+        }
+        root.addView(TextView(context).apply {
+            text = context.getString(R.string.pro_sheet_input_hint)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f)
+            setTextColor(textMain)
+            setTypeface(typeface, Typeface.BOLD)
+            setPadding(0, dp(4), 0, dp(2))
+        })
         val input = EditText(context).apply {
             hint = context.getString(R.string.pro_dialog_hint)
             // v1.6.1：激活码内含区分大小写的 Base64URL，不能再强制键盘大写
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             setSingleLine(true)
-            // 始终从空框开始：曾激活但已到期时若预填旧码，用户直接点激活只会
-            // 得到「已过期」而非成功，容易误以为入口失效；让用户明确粘贴新码。
             setText("")
             setTextColor(textMain)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+            setBackgroundResource(android.R.drawable.edit_text)
+            setPadding(dp(10), dp(10), dp(10), dp(10))
         }
         root.addView(
             input,
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = dp(10) }
+            ).apply { topMargin = dp(4) }
         )
+        root.addView(TextView(context).apply {
+            text = context.getString(R.string.pro_sheet_no_code)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f)
+            setTextColor(primary)
+            setTypeface(typeface, Typeface.BOLD)
+            setPadding(0, dp(6), 0, dp(6))
+            setOnClickListener { showBuy(context) }
+        })
+        root.addView(TextView(context).apply {
+            text = context.getString(R.string.pro_sheet_benefits)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f)
+            setTextColor(textSub)
+            setLineSpacing(dp(3).toFloat(), 1f)
+            setPadding(0, dp(4), 0, dp(2))
+        })
+        root.addView(TextView(context).apply {
+            text = context.getString(R.string.pro_sheet_price)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f)
+            setTextColor(primary)
+            setPadding(0, dp(6), 0, dp(2))
+        })
 
+        // ScrollView 包裹：小屏或大字体下，全部内容都能滚动看到，不再裁掉底部
+        val scroll = ScrollView(context).apply { addView(root) }
         val dialog = MaterialAlertDialogBuilder(context)
             .setTitle(R.string.pro_sheet_title)
-            .setView(root)
+            .setView(scroll)
             .setNegativeButton(R.string.action_cancel, null)
             .setPositiveButton(R.string.pro_sheet_activate, null)
             .create()
         // 覆盖默认按钮监听，校验失败时不关闭面板，用户可重新输入
         dialog.setOnShowListener {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                val info = ProHelper.verify(input.text.toString())
+                val code = input.text.toString().trim()
+                if (code.isEmpty()) {
+                    input.error = context.getString(R.string.pro_activate_empty)
+                    input.requestFocus()
+                    return@setOnClickListener
+                }
+                val info = ProHelper.verify(code)
                 if (info.valid) {
                     prefs.proActivated = true
                     prefs.proForever = info.forever
                     prefs.proExpireAt = info.expireAt
-                    prefs.proCode = input.text.toString().trim()
+                    prefs.proCode = code
                     Toast.makeText(context, R.string.pro_activate_ok, Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                     onSuccess?.invoke()
