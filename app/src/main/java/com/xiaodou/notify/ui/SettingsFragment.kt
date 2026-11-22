@@ -541,6 +541,16 @@ class SettingsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        refreshVisibleStatus()
+    }
+
+    /** show/hide 复用模式下切回本页不触发 onResume，需在变为可见时刷新状态 */
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) refreshVisibleStatus()
+    }
+
+    private fun refreshVisibleStatus() {
         if (_binding != null) {
             // Pro 状态回到前台即刷新：周卡可能在后台到期、或刚从换码面板返回
             binding.tvProStatus.text = ProHelper.statusText(app.prefs)

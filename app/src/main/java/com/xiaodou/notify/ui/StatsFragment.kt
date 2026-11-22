@@ -22,7 +22,6 @@ import com.xiaodou.notify.util.ProHelper
 import com.xiaodou.notify.util.ProSheet
 import com.xiaodou.notify.util.ThemeHelper
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -119,6 +118,12 @@ class StatsFragment : Fragment() {
         if (::app.isInitialized && _binding != null) refresh()
     }
 
+    /** show/hide 复用模式下切回本页不触发 onResume，需在变为可见时刷新数据 */
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden && ::app.isInitialized && _binding != null) refresh()
+    }
+
     private fun refresh() {
         lifecycleScope.launch(Dispatchers.IO) {
             val dao = app.database.notificationDao()
@@ -131,13 +136,15 @@ class StatsFragment : Fragment() {
             val learned = dao.countLearnedVisible(showFeedback)
 
             // v1.7.6 待办入口：与历史页保持同样的可见口径（默认不含系统操作提示）
+            // P1 性能：旧实现用 observeAll().first() 读取整张表再在内存过滤；
+            // 改为按待办 id 集合分批查询最小投影，避免为数个 id 载入全表明文实体。
             val todoIds = app.prefs.todoIdSet()
             val todoCount = if (todoIds.isEmpty()) 0 else {
-                val visible = dao.observeAll().first().let { rows ->
-                    if (showFeedback) rows
-                    else rows.filter { it.category != com.xiaodou.notify.engine.FeedbackNoticeFilter.CATEGORY }
+                todoIds.chunked(400).sumOf { batch ->
+                    dao.categoryByIds(batch).count { row ->
+                        showFeedback || row.category != com.xiaodou.notify.engine.FeedbackNoticeFilter.CATEGORY
+                    }
                 }
-                visible.count { todoIds.contains(it.id) }
             }
 
             // 排行：按口径取对应结果的应用分布（FR-S1 分口径查看）

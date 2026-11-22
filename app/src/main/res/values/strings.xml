@@ -444,6 +444,8 @@
     <string name="diag_copy">复制报告</string>
     <string name="diag_logcat">抓取日志</string>
     <string name="diag_open_permission">通知使用权</string>
+    <string name="diag_perf_on">打点：开</string>
+    <string name="diag_perf_off">打点：关</string>
     <string name="probe_notification_title">小豆通知 · 监听自测</string>
     <string name="diag_need_post_permission">需要先允许本应用发送通知，才能发出自测通知</string>
     <string name="diag_probe_sent">已发出自测通知：%1$s\n请等 8 秒后看结果（通知被系统静默也属正常，只看是否被捕获）</string>

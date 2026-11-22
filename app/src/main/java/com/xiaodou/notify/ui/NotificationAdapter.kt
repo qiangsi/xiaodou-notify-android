@@ -7,14 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.xiaodou.notify.R
-import com.xiaodou.notify.data.CryptoHelper
 import com.xiaodou.notify.data.NotificationEntity
 import com.xiaodou.notify.data.Result
 import com.xiaodou.notify.databinding.ItemNotificationBinding
+import com.xiaodou.notify.util.DecryptCache
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -30,10 +30,38 @@ class NotificationAdapter(
 
     private var items: List<TimelineItem> = emptyList()
     private val iconCache = HashMap<String, Drawable?>()
+    /** 时间显示格式化器复用，避免滚动时逐条 new */
+    private val timeFmt = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ENTRY = 1
+
+        /**
+         * 分组为时间轴条目。纯函数、无 UI 依赖，供 HistoryFragment 在后台线程预计算，
+         * 避免数据量大时在主线程分组掉帧。list 需按时间倒序。
+         */
+        fun group(list: List<NotificationEntity>, groupByDay: Boolean): List<TimelineItem> {
+            val dayKey = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val dayLabel = SimpleDateFormat("yyyy年M月d日", Locale.getDefault())
+            val result = mutableListOf<TimelineItem>()
+            if (!groupByDay) {
+                list.forEach { result += TimelineItem.Entry(it) }
+            } else {
+                val byDay = LinkedHashMap<String, MutableList<NotificationEntity>>()
+                list.forEach { e ->
+                    val k = dayKey.format(Date(e.timestamp))
+                    byDay.getOrPut(k) { mutableListOf() }.add(e)
+                }
+                byDay.forEach { (_, entries) ->
+                    val first = entries.first().timestamp
+                    result += TimelineItem.Header(dayLabel.format(Date(first)), dayKey.format(Date(first)))
+                    // v1.6.0：组内也按时间倒序，最新的通知排在最上面（整页彻底倒叙）
+                    entries.sortedByDescending { it.timestamp }.forEach { result += TimelineItem.Entry(it) }
+                }
+            }
+            return result
+        }
     }
 
     class HeaderVH(val view: View) : RecyclerView.ViewHolder(view) {
@@ -66,9 +94,10 @@ class NotificationAdapter(
     private fun bindEntry(holder: EntryVH, item: NotificationEntity) {
         val b = holder.binding
         b.tvApp.text = item.appName
-        b.tvTime.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(item.timestamp))
-        b.tvTitle.text = CryptoHelper.decrypt(item.titleEnc)
-        b.tvText.text = CryptoHelper.decrypt(item.textEnc)
+        b.tvTime.text = timeFmt.format(Date(item.timestamp))
+        val plain = DecryptCache.plain(item)
+        b.tvTitle.text = plain.first
+        b.tvText.text = plain.second
 
         val filtered = item.result != Result.KEPT
         b.tvBadge.setText(if (filtered) R.string.badge_filtered else R.string.badge_kept)
@@ -111,29 +140,30 @@ class NotificationAdapter(
     }
 
     /**
-     * 按日期分组。list 需按时间倒序；组内按当日时间正序渲染（PRD FR-H3）。
-     * @param groupByDay true=插入日期头；false=平铺（用于单日筛选结果）
+     * 计算与当前列表的差异。纯计算、可在后台线程调用，配合 [applyDiff] 在主线程提交。
+     * 日期头按 key（yyyy-MM-dd）识别、通知按 entity.id 识别；内容变化按 data class equals 判定。
      */
-    fun submitList(list: List<NotificationEntity>, groupByDay: Boolean = true) {
-        val dayKey = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val dayLabel = SimpleDateFormat("yyyy年M月d日", Locale.getDefault())
-        val result = mutableListOf<TimelineItem>()
-        if (!groupByDay) {
-            list.forEach { result += TimelineItem.Entry(it) }
-        } else {
-            // list 已按时间倒序；先按天分组（保持天的倒序），组内再正序
-            val byDay = LinkedHashMap<String, MutableList<NotificationEntity>>()
-            list.forEach { e ->
-                val k = dayKey.format(Date(e.timestamp))
-                byDay.getOrPut(k) { mutableListOf() }.add(e)
+    fun computeDiff(grouped: List<TimelineItem>): DiffUtil.DiffResult {
+        val old = items
+        return DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = old.size
+            override fun getNewListSize() = grouped.size
+            override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean {
+                val a = old[oldPos]
+                val b = grouped[newPos]
+                return when {
+                    a is TimelineItem.Header && b is TimelineItem.Header -> a.key == b.key
+                    a is TimelineItem.Entry && b is TimelineItem.Entry -> a.entity.id == b.entity.id
+                    else -> false
+                }
             }
-            byDay.forEach { (k, entries) ->
-                result += TimelineItem.Header(dayLabel.format(Date(entries.first().timestamp)), k)
-                // v1.6.0：组内也按时间倒序，最新的通知排在最上面（整页彻底倒叙）
-                entries.sortedByDescending { it.timestamp }.forEach { result += TimelineItem.Entry(it) }
-            }
-        }
-        items = result
-        notifyDataSetChanged()
+            override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean = old[oldPos] == grouped[newPos]
+        })
+    }
+
+    /** 主线程提交后台算好的差异结果 */
+    fun applyDiff(grouped: List<TimelineItem>, diff: DiffUtil.DiffResult) {
+        items = grouped
+        diff.dispatchUpdatesTo(this)
     }
 }

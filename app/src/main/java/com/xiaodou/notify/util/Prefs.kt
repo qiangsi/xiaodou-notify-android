@@ -328,6 +328,17 @@ class Prefs(context: Context) {
         probeLog = lines.joinToString("\n")
     }
 
+    /**
+     * 性能打点开关（默认关闭）：仅在诊断页手动打开后记录切页 / inflate / 列表重算耗时。
+     * 只写阶段名与毫秒数，不采集通知正文。重启后不保留，避免长期开启影响日常使用。
+     */
+    var perfTrace: Boolean
+        get() = sp.getBoolean(KEY_PERF_TRACE, false)
+        set(value) {
+            sp.edit().putBoolean(KEY_PERF_TRACE, value).apply()
+            PerfTracer.enabled = value
+        }
+
     companion object {
         private const val KEY_AI_ENABLED = "ai_enabled"
         private const val KEY_DEFAULT_RULES_SEEDED = "default_rules_seeded"
@@ -381,6 +392,7 @@ class Prefs(context: Context) {
         private const val KEY_PROBE_LAST_PKG = "probe_last_pkg"
         private const val KEY_PROBE_LAST_AT = "probe_last_at"
         private const val KEY_PROBE_LOG = "probe_log"
+        private const val KEY_PERF_TRACE = "perf_trace"
         private const val KEY_VIP_GUARD_ENABLED = "vip_guard_enabled"
         private const val KEY_VIP_GUARD_WORDS = "vip_guard_words"
         private const val KEY_TODO_IDS = "todo_ids"

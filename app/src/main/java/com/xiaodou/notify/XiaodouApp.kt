@@ -13,6 +13,7 @@ import com.xiaodou.notify.engine.MuteController
 import com.xiaodou.notify.listener.KeepAliveJobService
 import com.xiaodou.notify.util.AppLockGuard
 import com.xiaodou.notify.util.Prefs
+import com.xiaodou.notify.util.PerfTracer
 import com.xiaodou.notify.util.ThemeHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,8 @@ class XiaodouApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        // 性能打点：默认关闭；仅在诊断页手动打开过才启用，重启后按持久化状态恢复
+        PerfTracer.enabled = prefs.perfTrace
         // FR-E6：深浅模式全局应用（配色由各 Activity 在 onCreate 前 setTheme）
         ThemeHelper.applyNightMode(prefs.themeMode)
         createChannels()

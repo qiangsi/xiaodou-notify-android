@@ -17,6 +17,14 @@ interface NotificationDao {
     @Query("SELECT * FROM notifications WHERE id = :id")
     suspend fun getById(id: Long): NotificationEntity?
 
+    /**
+     * 按 id 集合取回待办关联的通知，避免统计页为数个待办 id 读取整张表。
+     * Room 会对集合参数展开为 IN (...)，Android SQLite 变量上限 999，
+     * 待办规模通常远小于此；调用方按 400 一批查询以稳妥兜底。
+     */
+    @Query("SELECT id, category FROM notifications WHERE id IN (:ids)")
+    suspend fun categoryByIds(ids: List<Long>): List<IdCategory>
+
     @Query("SELECT * FROM notifications WHERE packageName = :pkg ORDER BY timestamp DESC LIMIT :limit")
     suspend fun getByPackage(pkg: String, limit: Int): List<NotificationEntity>
 
@@ -128,6 +136,8 @@ interface NotificationDao {
     @Query("UPDATE notifications SET score = 0, marked = NULL")
     suspend fun resetAllScores()
 }
+
+data class IdCategory(val id: Long, val category: String?)
 
 data class ResultCount(val result: String, val cnt: Int)
 

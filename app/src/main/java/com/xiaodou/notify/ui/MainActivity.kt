@@ -18,6 +18,7 @@ import com.xiaodou.notify.XiaodouApp
 import com.xiaodou.notify.databinding.ActivityMainBinding
 import com.xiaodou.notify.engine.MuteController
 import com.xiaodou.notify.listener.NotificationMonitorService
+import com.xiaodou.notify.util.PerfTracer
 import com.xiaodou.notify.util.ThemeHelper
 import com.xiaodou.notify.util.hasPostNotificationPermission
 import com.xiaodou.notify.util.isListenerEnabled
@@ -29,6 +30,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     /** 统计页指标数字跳转时暂存的初始筛选维度，切到历史 tab 时消费 */
     private var pendingHistoryFilter: Int = HistoryFragment.FILTER_ALL
+
+    /**
+     * v1.0.0 性能：四个 tab 的 Fragment 实例缓存。
+     * 旧实现每次切页都 replace → 销毁重建 → 重新 inflate 设置页 69KB 布局、
+     * 重新订阅历史页全表 Flow；改为 add 一次 + show/hide 复用后切页不再重复这些开销。
+     */
+    private val fragmentCache = mutableMapOf<Int, Fragment>()
 
     /**
      * v1.6.5：当前权限弹窗的唯一引用。
@@ -65,19 +73,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_history -> {
-                    switchFragment(HistoryFragment.newInstance(pendingHistoryFilter))
-                    pendingHistoryFilter = HistoryFragment.FILTER_ALL
-                }
-                R.id.nav_rules -> switchFragment(RulesFragment())
-                R.id.nav_stats -> switchFragment(StatsFragment())
-                R.id.nav_settings -> switchFragment(SettingsFragment())
-            }
+            switchTab(item.itemId)
             true
         }
         if (savedInstanceState == null) {
             binding.bottomNav.selectedItemId = R.id.nav_history
+        } else {
+            // 旋转重建后按当前选中的 tab 恢复显示（FragmentManager 已自动恢复 add 过的实例）
+            restoreCachedFragments()
+            val current = binding.bottomNav.selectedItemId
+            showTab(current)
         }
 
         // v1.6.5：唯一的权限同步入口，幂等；onCreate / onResume / 授权结果 / 设置页返回都走这里
@@ -94,19 +99,60 @@ class MainActivity : AppCompatActivity() {
     fun openHistoryWithFilter(filter: Int) {
         pendingHistoryFilter = filter
         if (binding.bottomNav.selectedItemId == R.id.nav_history) {
-            // 已在历史页时 selectedItemId 不变、不会触发 listener，需直接替换
-            switchFragment(HistoryFragment.newInstance(filter))
+            // 已在历史页时 selectedItemId 不变、不会触发 listener，直接通知已缓存实例
+            (fragmentCache[R.id.nav_history] as? HistoryFragment)?.applyIncomingFilter(filter)
             pendingHistoryFilter = HistoryFragment.FILTER_ALL
         } else {
             binding.bottomNav.selectedItemId = R.id.nav_history
         }
     }
 
-    private fun switchFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .commit()
+    /** 首次进入某 tab 时创建并 add；已有实例直接复用。 */
+    private fun switchTab(tabId: Int) {
+        PerfTracer.section("switchTab-$tabId") {
+            if (!fragmentCache.containsKey(tabId)) {
+                val fragment = when (tabId) {
+                    R.id.nav_history -> HistoryFragment.newInstance(pendingHistoryFilter)
+                    R.id.nav_rules -> RulesFragment()
+                    R.id.nav_stats -> StatsFragment()
+                    R.id.nav_settings -> SettingsFragment()
+                    else -> return@section
+                }
+                pendingHistoryFilter = HistoryFragment.FILTER_ALL
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, fragment, fragmentTag(tabId))
+                    .hide(fragment)
+                    .commitNow()
+                fragmentCache[tabId] = fragment
+            }
+            showTab(tabId)
+        }
     }
+
+    /** 显示目标 tab、隐藏其余；触发 onHiddenChanged 让各页刷新状态。 */
+    private fun showTab(tabId: Int) {
+        val target = fragmentCache[tabId] ?: return
+        PerfTracer.section("showTab-$tabId") {
+            supportFragmentManager.beginTransaction().apply {
+                fragmentCache.forEach { (id, fragment) ->
+                    if (id == tabId) show(fragment) else if (fragment.isAdded) hide(fragment)
+                }
+                commitNow()
+            }
+        }
+    }
+
+    /** 旋转重建后从 FragmentManager 按 tag 找回已恢复的实例，重建缓存表。 */
+    private fun restoreCachedFragments() {
+        listOf(
+            R.id.nav_history, R.id.nav_rules, R.id.nav_stats,
+            R.id.nav_settings
+        ).forEach { id ->
+            supportFragmentManager.findFragmentByTag(fragmentTag(id))?.let { fragmentCache[id] = it }
+        }
+    }
+
+    private fun fragmentTag(tabId: Int) = "tab_$tabId"
 
     /**
      * 权限状态统一收口：

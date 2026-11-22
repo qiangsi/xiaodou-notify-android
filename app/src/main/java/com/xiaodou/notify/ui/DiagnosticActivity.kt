@@ -30,6 +30,7 @@ class DiagnosticActivity : AppCompatActivity() {
 
     private lateinit var tvReport: TextView
     private lateinit var btnWatch: MaterialButton
+    private lateinit var btnPerf: MaterialButton
     private val handler = Handler(Looper.getMainLooper())
     private var checkRunnable: Runnable? = null
     private val app: XiaodouApp get() = application as XiaodouApp
@@ -54,6 +55,16 @@ class DiagnosticActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_copy).setOnClickListener { copyReport() }
         findViewById<View>(R.id.btn_logcat).setOnClickListener { showLogcat() }
         findViewById<View>(R.id.btn_open_permission).setOnClickListener { openListenerSettings(this) }
+        btnPerf = findViewById(R.id.btn_perf_trace)
+        btnPerf.setOnClickListener {
+            app.prefs.perfTrace = !app.prefs.perfTrace
+            refresh()
+            Toast.makeText(
+                this,
+                if (app.prefs.perfTrace) R.string.diag_perf_on else R.string.diag_perf_off,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         refresh()
     }
@@ -105,6 +116,7 @@ class DiagnosticActivity : AppCompatActivity() {
         btnWatch.text = getString(
             if (app.prefs.probeSessionActive) R.string.diag_watch_stop else R.string.diag_watch
         )
+        btnPerf.text = getString(if (app.prefs.perfTrace) R.string.diag_perf_on else R.string.diag_perf_off)
     }
 
     private fun copyReport() {
