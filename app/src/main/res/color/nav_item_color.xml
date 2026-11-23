@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 选中：主色；未选中按下/悬停：预览主色；默认：次级色。图标形状另有填充/描边区分 -->
     <item android:color="?attr/colorPrimary" android:state_checked="true" />
+    <item android:color="?attr/colorPrimary" android:state_pressed="true" />
+    <item android:color="?attr/colorPrimary" android:state_hovered="true" />
     <item android:color="?attr/colorOnSurfaceVariant" />
 </selector>
