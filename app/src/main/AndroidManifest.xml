@@ -166,6 +166,11 @@
             android:name=".listener.UndoReceiver"
             android:exported="false" />
 
+        <!-- v1.0.11 静音到期闹钟：进程被杀 / Doze 冻结时由系统唤醒，恢复铃声 -->
+        <receiver
+            android:name=".listener.MuteExpireReceiver"
+            android:exported="false" />
+
         <receiver
             android:name=".listener.CodeCopyReceiver"
             android:exported="false" />

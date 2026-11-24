@@ -1,13 +1,17 @@
 package com.xiaodou.notify.engine
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
+import com.xiaodou.notify.listener.MuteExpireReceiver
 import com.xiaodou.notify.util.Prefs
 
 /**
- * 智能静音 / 规则静音的统一状态机（v1.7.1 修复）。
+ * 智能静音 / 规则静音的统一状态机（v1.0.1 修复，v1.0.11 闹钟兜底）。
  *
  * 旧实现的问题：
  *  1. muteBriefly() 每次都把「当前 ringerMode」当作原模式。高频通知会在上一次静音未到期时
@@ -19,10 +23,18 @@ import com.xiaodou.notify.util.Prefs
  *  4. 没有来电/通话判断，来电时仍在静音，导致漏接重要电话。
  *  5. 触发窗口 mutableMap 非线程安全，并发通知下存在竞态。
  *
+ * v1.0.11 补充的问题：
+ *  6. 到期恢复此前只依赖 500ms 的 Handler 巡检。Handler 用 uptime，锁屏深度睡眠（Doze）时
+ *     不推进；进程被杀后 Runnable 全部丢失。用户设完静音锁屏、不重新打开 App，就再也没人
+ *     恢复铃声 → 「设了静音之后手机一直静音」。现改为同时向系统注册 RTC_WAKEUP 到期闹钟，
+ *     进程被杀 / Doze 也能唤醒 [MuteExpireReceiver] 执行恢复，Handler 仅用于来电的快速响应。
+ *  7. 上次静音到期但尚未恢复时若再次触发，会读到当前 SILENT 并把它记成原模式，
+ *     恢复目标变成 SILENT，形成永久静音。现在开始新静音前先收尾遗留的过期静音。
+ *
  * 本实现的约束：
  *  - 原模式只在首次静音前记录一次；重复触发只延长截止时间，绝不重读已静音的模式。
  *  - 状态（原模式 + 到期时刻）持久化到 Prefs，进程重启/回前台后重新对齐。
- *  - 手动解除、来电、超时共用同一个 cancel()，先撤销挂起任务再恢复。
+ *  - 手动解除、来电、超时、用户接管共用同一个 cancel()，先撤销挂起任务与闹钟再恢复。
  *  - 静音期间巡检 AudioManager.mode，来电立即恢复铃声并清空触发窗口（无需危险权限）。
  *  - 用户若自行通过音量键/快捷设置改了铃声，认定其已接管，撤销状态且不覆盖其选择。
  */
@@ -30,10 +42,12 @@ object MuteController {
 
     /** Prefs 中「未静音」的哨兵值 */
     private const val NO_ORIGINAL = -1
-    /** 静音期间巡检间隔：来电后尽快恢复，控制在 0.5 秒内 */
+    /** 静音期间巡检间隔：来电后尽快恢复，控制在 0.5 秒内（仅进程存活时有效） */
     private const val WATCH_INTERVAL_MS = 500L
     /** 触发窗口清理阈值：1 小时无活动的包直接丢弃 */
     private const val IDLE_PURGE_MS = 3_600_000L
+    /** 到期闹钟请求码：固定值保证重新注册会覆盖旧闹钟、取消时能命中同一个 PendingIntent */
+    private const val REQ_MUTE_EXPIRE = 4201
 
     private val handler = Handler(Looper.getMainLooper())
     private val lock = Any()
@@ -86,6 +100,13 @@ object MuteController {
         val durationMs = seconds.coerceIn(1, 600) * 1000L
         synchronized(lock) {
             if (isCallActive(am)) return
+
+            // v1.0.11：先收尾「已到期但没被巡检恢复」的遗留静音（进程被冻结/旧版本无闹钟）。
+            // 不先恢复就继续，会把当前的 SILENT 当成原模式记下来，之后每次恢复都回到 SILENT。
+            if (prefs.muteUntil in 1..now) {
+                cancelLocked(context.applicationContext, prefs, "stale")
+            }
+
             val until = prefs.muteUntil
             val original = prefs.muteOriginalMode
             if (until > now) {
@@ -102,6 +123,8 @@ object MuteController {
             }
             prefs.muteSource = source
             scheduleWatch(context.applicationContext, prefs)
+            // 闹钟与巡检同时挂：进程被杀/Doze 冻结时靠系统唤醒，这是「一直静音」的关键兜底。
+            armAlarmLocked(context.applicationContext, prefs)
         }
     }
 
@@ -109,8 +132,8 @@ object MuteController {
     fun unmute(context: Context, prefs: Prefs) = cancel(context, prefs, "manual")
 
     /**
-     * 进程启动 / 回到前台 / 服务重建 / 切后台时调用，把内存状态与持久化状态对齐。
-     * 进程被杀后挂起的 Runnable 已丢失，这里按到期时刻决定「续挂巡检」还是「立即恢复」。
+     * 进程启动 / 回到前台 / 服务重建 / 切后台 / 到期闹钟 时调用，把内存状态与持久化状态对齐。
+     * 进程被杀后挂起的 Runnable 已丢失，这里按到期时刻决定「续挂巡检 + 重挂闹钟」还是「立即恢复」。
      */
     fun recoverIfNeeded(context: Context, prefs: Prefs) {
         if (prefs.muteUntil <= 0L) return
@@ -119,6 +142,8 @@ object MuteController {
                 cancelLocked(context.applicationContext, prefs, "expired")
             } else {
                 scheduleWatch(context.applicationContext, prefs)
+                // 重启/升级后闹钟可能丢失，只要还在静音窗口内就按最新到期时刻重挂。
+                armAlarmLocked(context.applicationContext, prefs)
             }
         }
     }
@@ -163,11 +188,40 @@ object MuteController {
                     // 用户自己改了铃声（音量键/快捷设置）：认定已接管，撤销状态且不覆盖其选择
                     clearStateLocked(prefs)
                     clearWatchLocked()
+                    cancelAlarm(context)
                 }
                 else -> handler.postDelayed(self, WATCH_INTERVAL_MS)
             }
         }
     }
+
+    /** 系统级到期闹钟：进程被杀 / Doze 冻结时也能按时唤醒并恢复铃声。 */
+    private fun armAlarmLocked(context: Context, prefs: Prefs) {
+        val until = prefs.muteUntil
+        if (until <= 0L) return
+        val am = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
+        val pi = expirePendingIntent(context)
+        try {
+            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, until, pi)
+        } catch (_: SecurityException) {
+            // Android 12+ 未授予精确闹钟权限时降级为低空闲闹钟：Doze 下仍可唤醒，
+            // 具体时刻可能略有延迟，但绝不会像 Handler 那样永久停摆。
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, until, pi)
+        }
+    }
+
+    private fun cancelAlarm(context: Context) {
+        val am = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
+        am.cancel(expirePendingIntent(context))
+    }
+
+    private fun expirePendingIntent(context: Context): PendingIntent =
+        PendingIntent.getBroadcast(
+            context.applicationContext,
+            REQ_MUTE_EXPIRE,
+            Intent(context.applicationContext, MuteExpireReceiver::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
     private fun cancel(context: Context, prefs: Prefs, reason: String) {
         synchronized(lock) { cancelLocked(context.applicationContext, prefs, reason) }
@@ -175,6 +229,7 @@ object MuteController {
 
     private fun cancelLocked(context: Context, prefs: Prefs, reason: String) {
         clearWatchLocked()
+        cancelAlarm(context)
         val original = prefs.muteOriginalMode
         clearStateLocked(prefs)
         if (original == NO_ORIGINAL) return
