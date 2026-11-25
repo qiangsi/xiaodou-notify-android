@@ -16,7 +16,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xiaodou.notify.R
 import com.xiaodou.notify.XiaodouApp
 import com.xiaodou.notify.databinding.ActivityMainBinding
-import com.xiaodou.notify.engine.MuteController
 import com.xiaodou.notify.listener.NotificationMonitorService
 import com.xiaodou.notify.util.PerfTracer
 import com.xiaodou.notify.util.ThemeHelper
@@ -226,8 +225,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // v1.7.1：回前台先对齐静音状态（到期则恢复，未到期则续挂巡检）
-        MuteController.recoverIfNeeded(this, prefs)
         // 返回前台先按当前权限状态同步：已授权则关闭遗留弹窗，未授权也只保留一个
         syncPermissionState()
         // FR-H1 边界：监听中断后的漏记透明提示
@@ -244,8 +241,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        // v1.7.1：切后台也对齐一次；进程在此后被杀也不影响，到期时刻已持久化
-        MuteController.recoverIfNeeded(this, prefs)
         super.onStop()
     }
 

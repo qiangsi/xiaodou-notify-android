@@ -1060,6 +1060,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
+                    android:visibility="gone"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11.5sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/settings_smart_mute_desc"
                     android:textColor="@color/text_secondary"
                     android:textSize="11.5sp" />
 

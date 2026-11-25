@@ -49,8 +49,15 @@ object ActionExecutor {
             }
         }
         Actions.MUTE -> {
-            muteBriefly(context, param)
-            ActionOutcome(true, Result.RULE, "已静音")
+            // v1.0.12：静音 = 静默消除这一条通知，绝不改系统铃声（否则整台手机被静音）。
+            // 与 DISMISS 同样的机制，但结果记为 RULE，文案区分「已静默消除」。
+            val key = entity.sysKey
+            if (key.isNullOrEmpty()) {
+                ActionOutcome(false, Result.KEPT, "无法静默消除：缺少系统通知标识（旧版本记录）")
+            } else {
+                NotificationBridge.cancel(key)
+                ActionOutcome(true, Result.RULE, "已静默消除该通知")
+            }
         }
         Actions.SNOOZE -> {
             snooze(context, entity, param, decryptedTitle, decryptedText)
@@ -79,13 +86,6 @@ object ActionExecutor {
         else -> ActionOutcome(false, Result.KEPT, "未知动作")
     }
 
-    private fun muteBriefly(context: Context, param: String) {
-        val seconds = param.toIntOrNull()?.coerceIn(1, 600) ?: 5
-        val prefs = (context.applicationContext as? XiaodouApp)?.prefs ?: return
-        // v1.7.1：统一交给 MuteController，避免「重复触发把 SILENT 当原模式」导致永久静音
-        MuteController.mute(context, seconds, prefs, "rule")
-    }
-
     private fun snooze(context: Context, entity: NotificationEntity, param: String, title: String, text: String) {
         val minutes = param.toIntOrNull()?.coerceIn(1, 1440) ?: 10
         // v1.7.5：推迟的通知自动进待办收件箱，避免「弹完就忘」
@@ -101,19 +101,22 @@ object ActionExecutor {
             tts = TextToSpeech(context) { status ->
                 if (status == TextToSpeech.SUCCESS) {
                     tts?.setLanguage(Locale.CHINA)
-                    tts?.speak("$title，$text", TextToSpeech.QUEUE_FLUSH, null, "xiaodou-tts")
+                    tts?.speak("$title，$text", TextToSpeech.QUEUE_FLUSH, null, "maodou-tts")
                 }
             }
         } else {
-            tts?.speak("$title，$text", TextToSpeech.QUEUE_FLUSH, null, "xiaodou-tts")
+            tts?.speak("$title，$text", TextToSpeech.QUEUE_FLUSH, null, "maodou-tts")
         }
         app.appScope.launch(Dispatchers.Main) { /* 保持引用 */ }
     }
 
-    /** 智能静音：短时间内同 App 高频通知时临时静音（阈值/窗口/时长均可配 FR-E2） */
-    fun shouldSmartMute(context: Context, pkg: String, prefs: Prefs): Boolean =
-        MuteController.shouldSmartMute(context, pkg, prefs)
+    /** 智能静音判定：短时间内同 App 高频通知时，静默消除该条（阈值/窗口可配 FR-E2） */
+    fun shouldSmartMute(context: Context, pkg: String, category: String?, prefs: Prefs): Boolean =
+        MuteController.shouldSmartMute(context, pkg, category, prefs)
 
-    /** 用户手动提前解除全局静音（FR-E2）：撤销挂起任务并恢复到静音前的模式 */
-    fun unmute(context: Context, prefs: Prefs) = MuteController.unmute(context, prefs)
+    /**
+     * 兼容旧调用。v1.0.12 起不再有全局静音，此操作仅清空高频判定窗口，
+     * 不影响系统铃声（系统铃声本就从未被本 App 改动）。
+     */
+    fun unmute(context: Context, prefs: Prefs) = MuteController.clearWindows()
 }

@@ -113,6 +113,7 @@
     <string name="settings_enhance">通知增强</string>
     <string name="settings_undo">5 秒撤销按钮</string>
     <string name="settings_smart_mute">智能静音</string>
+    <string name="settings_smart_mute_desc">同一 App 短时间内频繁通知时，只把骚扰通知静默消除（不响铃、不弹窗），历史仍可查。不会改动手机铃声，来电、闹钟、其它 App 通知均不受影响。</string>
     <string name="settings_code_copy">验证码提取</string>
     <string name="settings_show_feedback">显示系统操作提示</string>
     <string name="settings_show_feedback_desc">截图、录屏、投屏等系统自动生成的提示默认隐藏；开启后可在历史与统计中查看</string>
@@ -189,8 +190,8 @@
     <string name="settings_mute_threshold">智能静音：%1$d 条 / %2$d 秒内</string>
     <string name="settings_mute_duration">静音时长：%1$d 秒</string>
     <string name="settings_retain_days">历史保留 %1$d 天</string>
-    <string name="settings_unlock_now">立即恢复铃声</string>
-    <string name="settings_unmuted">已恢复铃声</string>
+    <string name="settings_unlock_now">清空静音判定</string>
+    <string name="settings_unmuted">已清空静音判定（本 App 从不改动手机铃声）</string>
     <string name="settings_app_lock">应用锁</string>
     <string name="settings_app_lock_desc">进入应用需指纹/面容验证</string>
     <string name="settings_permission_lost">通知使用权似乎已被收回，点此重新开启</string>

@@ -17,7 +17,6 @@ import com.xiaodou.notify.data.Result
 import com.xiaodou.notify.engine.ActionExecutor
 import com.xiaodou.notify.engine.FeedbackNoticeFilter
 import com.xiaodou.notify.engine.MatchContext
-import com.xiaodou.notify.engine.MuteController
 import com.xiaodou.notify.engine.RuleEngine
 import com.xiaodou.notify.engine.SpamScorer
 import com.xiaodou.notify.util.DiagnosticProbe
@@ -136,8 +135,7 @@ class NotificationMonitorService : NotificationListenerService() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        // v1.7.1：监听服务重建时同样对齐静音状态，覆盖「只有服务存活、无 Activity」的场景
-        (applicationContext as? XiaodouApp)?.let { MuteController.recoverIfNeeded(this, it.prefs) }
+        // v1.0.12：不再有全局静音状态需要恢复（本 App 从不改系统铃声）
     }
 
     override fun onDestroy() {
@@ -271,6 +269,15 @@ class NotificationMonitorService : NotificationListenerService() {
 
             if (excludedNoFilter) return@launch // 排除档位2：记录不过滤
 
+            // v1.0.12 睡眠场景静默：只把这条通知从通知栏静默消除，不改系统铃声。
+            // 必须放在 filterPaused 之前（睡眠场景同时开着暂停过滤）；VIP 守护词已在上方穿透。
+            // 验证码/来电/媒体/常驻一律豁免，永不静默。
+            if (app.prefs.sleepSilence && category !in setOf("code", "call", "media", "ongoing")) {
+                try { cancelNotification(sbn.key) } catch (e: Exception) { }
+                dao.update(saved.copy(result = Result.RULE, filterReason = "睡眠静默（已静默消除）"))
+                return@launch
+            }
+
             // v1.7.3 系统操作反馈：照常加密落库，但不参与规则/AI/静音判定，
             // 避免截图这类提示消耗静音窗口或触发误拦截。默认在历史/统计中隐藏，开关打开才显示。
             if (category == FeedbackNoticeFilter.CATEGORY) {
@@ -281,9 +288,11 @@ class NotificationMonitorService : NotificationListenerService() {
             // FR-E4 全局暂停过滤：仅记录，不执行任何规则/AI/静音
             if (app.prefs.filterPaused) return@launch
 
-            // 2) 智能静音（FR-E2）
-            if (ActionExecutor.shouldSmartMute(applicationContext, pkg, app.prefs)) {
-                dao.update(saved.copy(result = Result.RULE, filterReason = "智能静音"))
+            // 2) 智能静音（FR-E2）：高频通知只静默消除「当前这一条」，绝不动系统铃声。
+            // 历史照常加密落库（上面已完成），只把这条从通知栏移除，其它通知与铃声不受影响。
+            if (ActionExecutor.shouldSmartMute(applicationContext, pkg, category, app.prefs)) {
+                try { cancelNotification(sbn.key) } catch (e: Exception) { }
+                dao.update(saved.copy(result = Result.RULE, filterReason = "智能静音（已静默消除）"))
                 return@launch
             }
 

@@ -244,6 +244,14 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_FILTER_PAUSED, false)
         set(value) = sp.edit().putBoolean(KEY_FILTER_PAUSED, value).apply()
 
+    /**
+     * v1.0.12 睡眠场景静默：开启时把到来的通知逐条静默消除（不响铃不弹窗），
+     * 但绝不改动系统铃声模式，来电/闹钟/媒体一律不受影响。仅由睡眠场景置位，退出即清除。
+     */
+    var sleepSilence: Boolean
+        get() = sp.getBoolean(KEY_SLEEP_SILENCE, false)
+        set(value) = sp.edit().putBoolean(KEY_SLEEP_SILENCE, value).apply()
+
     // —— v1.7.5 待办收件箱：延迟/重要的通知集中处理（仅存通知 id，不含正文）——
     /** 待办通知 id 集合（逗号分隔）。正文仍加密存于通知表，这里只引用 id。 */
     var todoIds: String
@@ -358,6 +366,7 @@ class Prefs(context: Context) {
         private const val KEY_MUTE_ORIGINAL_MODE = "mute_original_mode"
         private const val KEY_MUTE_UNTIL = "mute_until"
         private const val KEY_MUTE_SOURCE = "mute_source"
+        private const val KEY_SLEEP_SILENCE = "sleep_silence"
         private const val KEY_APP_LOCK = "app_lock"
         private const val KEY_APP_LOCK_TIMEOUT = "app_lock_timeout_min"
         private const val KEY_LAST_UNLOCK = "last_unlock_at"

@@ -80,12 +80,10 @@ object SceneController {
             }
         }
         prefs.sceneMode = mode
-        // 睡眠场景立即进入静音；其它场景恢复铃声，避免从睡眠切走后仍静音
-        if (mode == SLEEP) {
-            MuteController.mute(context, prefs.muteDurationSec, prefs, "scene")
-        } else {
-            MuteController.unmute(context, prefs)
-        }
+        // v1.0.12：睡眠场景不再把整台手机设成静音。改为「睡眠静默」——
+        // 只把到来的通知逐条静默消除（通知链路读 prefs.sleepSilence），系统铃声、来电、
+        // 闹钟一律不碰。退出任意场景即关闭，绝无残留的全局静音状态。
+        prefs.sleepSilence = (mode == SLEEP)
     }
 
     fun restore(prefs: Prefs) {
@@ -101,5 +99,6 @@ object SceneController {
         }
         prefs.sceneBackup = ""
         prefs.sceneMode = OFF
+        prefs.sleepSilence = false
     }
 }
