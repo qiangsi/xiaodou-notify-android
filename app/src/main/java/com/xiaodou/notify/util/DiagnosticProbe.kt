@@ -164,7 +164,10 @@ object DiagnosticProbe {
         val topSessionCount = p.probeSessionCount
         val noCaptureAtAll = topState != STATE_CAPTURED && topSessionCount == 0 &&
             runBlocking { try { XiaodouApp.instance.database.notificationDao().countAll() } catch (e: Exception) { 1 } } == 0
+        val topRinger = ringerStateText(ctx)
+        val phoneIsSilent = isPhoneSilent(ctx)
         val headline = when {
+            phoneIsSilent -> "🔇 手机当前处于静音/低音量 —— 用设置页「恢复手机铃声」调回响铃（见 1.5 节）；本 App 不会主动静音"
             !topListenerOn -> "❌ 通知使用权未授予 —— 去系统「通知使用权」打开小豆通知"
             !topConnected -> "❌ 假连接：权限已给，但监听服务没有真正连上系统"
             allowedEmpty -> "❌ 通知类型被系统判为空 —— 服务已连上但收不到任何通知，需卸载重装让系统重读配置"
@@ -188,6 +191,15 @@ object DiagnosticProbe {
         } catch (e: Exception) { "未知" }
         sb.appendLine("应用版本：$version")
         sb.appendLine("包名：${ctx.packageName}")
+        sb.appendLine()
+
+        // 1.5 铃声状态（v1.7.14：定位「手机被静音」投诉）
+        val legacyFlag = try { (ctx.applicationContext as? XiaodouApp)?.prefs?.legacyMuteRecovered } catch (e: Exception) { null }
+        sb.appendLine("【1.5 铃声状态】")
+        sb.appendLine("★当前铃声模式：$topRinger")
+        sb.appendLine("  铃声音量：${streamVolume(ctx, android.media.AudioManager.STREAM_RING)}")
+        sb.appendLine("  通知音量：${streamVolume(ctx, android.media.AudioManager.STREAM_NOTIFICATION)}")
+        sb.appendLine("  旧版静音迁移已执行：${legacyFlag ?: "未知"}（true=本 App 只在首次启动时恢复过一次，之后绝不碰铃声）")
         sb.appendLine()
 
         // 2. 权限状态
@@ -303,6 +315,31 @@ object DiagnosticProbe {
         val running = am?.getRunningServices(200)?.any { it.service.className == className } == true
         if (running) "运行中" else "未运行（看门狗会尝试恢复）"
     } catch (e: Exception) { "无法读取" }
+
+    private fun audioManager(ctx: Context): android.media.AudioManager? =
+        ctx.getSystemService(Context.AUDIO_SERVICE) as? android.media.AudioManager
+
+    private fun ringerStateText(ctx: Context): String = try {
+        when (audioManager(ctx)?.ringerMode) {
+            android.media.AudioManager.RINGER_MODE_SILENT -> "静音（SILENT）🔇"
+            android.media.AudioManager.RINGER_MODE_VIBRATE -> "振动（VIBRATE）"
+            android.media.AudioManager.RINGER_MODE_NORMAL -> "响铃（NORMAL）"
+            else -> "未知"
+        }
+    } catch (e: Exception) { "读取失败" }
+
+    private fun isPhoneSilent(ctx: Context): Boolean = try {
+        val am = audioManager(ctx) ?: return false
+        val modeSilent = am.ringerMode == android.media.AudioManager.RINGER_MODE_SILENT ||
+            am.ringerMode == android.media.AudioManager.RINGER_MODE_VIBRATE
+        val volLow = am.getStreamVolume(android.media.AudioManager.STREAM_RING) < 1
+        modeSilent || volLow
+    } catch (e: Exception) { false }
+
+    private fun streamVolume(ctx: Context, stream: Int): String = try {
+        val am = audioManager(ctx) ?: return "未知"
+        "${am.getStreamVolume(stream)} / ${am.getStreamMaxVolume(stream)}"
+    } catch (e: Exception) { "未知" }
 
     private fun exec(command: String): String {
         val process = Runtime.getRuntime().exec(command)
