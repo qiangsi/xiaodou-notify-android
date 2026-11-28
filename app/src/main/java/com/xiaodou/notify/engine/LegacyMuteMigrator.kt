@@ -42,7 +42,7 @@ object LegacyMuteMigrator {
         try {
             val am = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
             if (am != null && needsRestore(am)) {
-                forceRestore(am)
+                forceRestore(am, context)
             }
         } catch (e: Exception) {
             // 迁移失败不影响 App 启动
@@ -61,7 +61,7 @@ object LegacyMuteMigrator {
     fun restoreRingerManually(context: Context, prefs: Prefs): Boolean {
         val am = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager ?: return false
         if (!needsRestore(am)) return false
-        forceRestore(am)
+        forceRestore(am, context)
         clearLegacyFlags(prefs)
         return true
     }
@@ -75,7 +75,10 @@ object LegacyMuteMigrator {
     }
 
     /** 无条件恢复为响铃档，并把铃声/通知音量抬到可听值 */
-    private fun forceRestore(am: AudioManager) {
+    private fun forceRestore(am: AudioManager, context: Context? = null) {
+        // v1.7.15：打自我标记，黑匣子据此把随后到来的 RINGER_MODE_CHANGED 记为「本App」，
+        // 与「外部把手机静音」区分开——自证本 App 只恢复、从不静音。
+        if (context != null) RingerTrace.markSelfChange(context)
         try { am.ringerMode = AudioManager.RINGER_MODE_NORMAL } catch (e: Exception) { }
         bumpVolume(am, AudioManager.STREAM_RING)
         bumpVolume(am, AudioManager.STREAM_NOTIFICATION)

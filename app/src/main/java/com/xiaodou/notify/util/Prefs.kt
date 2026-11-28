@@ -346,6 +346,27 @@ class Prefs(context: Context) {
     }
 
     /**
+     * v1.7.15 铃声黑匣子：每次系统铃声模式变化（RINGER_MODE_CHANGED）抓一条现场证据。
+     * 只写状态类信息，不含任何通知正文；环形保留最近 60 条。
+     */
+    var ringerTraceLog: String
+        get() = sp.getString(KEY_RINGER_TRACE_LOG, "") ?: ""
+        set(value) = sp.edit().putString(KEY_RINGER_TRACE_LOG, value).apply()
+
+    /** 本 App 自己写铃声的时刻（epoch ms），用于给黑匣子事件打「本App」标记；0=从未 */
+    var selfRingerChangeAt: Long
+        get() = sp.getLong(KEY_SELF_RINGER_CHANGE_AT, 0L)
+        set(value) = sp.edit().putLong(KEY_SELF_RINGER_CHANGE_AT, value).apply()
+
+    /** 追加一条铃声黑匣子事件（环形保留 60 条） */
+    fun appendRingerTrace(message: String) {
+        val lines = ringerTraceLog.lines().filter { it.isNotBlank() }.toMutableList()
+        lines.add(message)
+        while (lines.size > 60) lines.removeAt(0)
+        ringerTraceLog = lines.joinToString("\n")
+    }
+
+    /**
      * 性能打点开关（默认关闭）：仅在诊断页手动打开后记录切页 / inflate / 列表重算耗时。
      * 只写阶段名与毫秒数，不采集通知正文。重启后不保留，避免长期开启影响日常使用。
      */
@@ -411,6 +432,8 @@ class Prefs(context: Context) {
         private const val KEY_PROBE_LAST_PKG = "probe_last_pkg"
         private const val KEY_PROBE_LAST_AT = "probe_last_at"
         private const val KEY_PROBE_LOG = "probe_log"
+        private const val KEY_RINGER_TRACE_LOG = "ringer_trace_log"
+        private const val KEY_SELF_RINGER_CHANGE_AT = "self_ringer_change_at"
         private const val KEY_PERF_TRACE = "perf_trace"
         private const val KEY_VIP_GUARD_ENABLED = "vip_guard_enabled"
         private const val KEY_VIP_GUARD_WORDS = "vip_guard_words"

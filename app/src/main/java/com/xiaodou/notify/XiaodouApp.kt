@@ -32,6 +32,9 @@ class XiaodouApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        // v1.7.15：铃声黑匣子先装好，再执行迁移——这样连「本 App 恢复铃声」这一动作
+        // 也会被抓进黑匣子并标记为「本App」，用于自证：本 App 只恢复、从不静音。
+        com.xiaodou.notify.engine.RingerTrace.install(this)
         // v1.7.13：旧版全局静音遗留状态一次性收尾。必须在任何通知处理前完成，
         // 把从 v1.7.1~v1.7.11 升级上来、仍停在静音的手机恢复为响铃并清除旧标记。
         // 只执行一次，之后本 App 永不再写系统铃声。

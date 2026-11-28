@@ -202,6 +202,18 @@ object DiagnosticProbe {
         sb.appendLine("  旧版静音迁移已执行：${legacyFlag ?: "未知"}（true=本 App 只在首次启动时恢复过一次，之后绝不碰铃声）")
         sb.appendLine()
 
+        // 1.6 铃声黑匣子（v1.7.15：抓「谁把手机静音了」的现场证据）
+        val trace = p.ringerTraceLog.lines().filter { it.isNotBlank() }
+        sb.appendLine("【1.6 铃声变化黑匣子】（最近 ${trace.size} 条 / 上限 60）")
+        sb.appendLine("  说明：每次铃声模式被改动都会自动记录现场（时间/旧→新/勿扰/前台App/来源）。")
+        sb.appendLine("  「来源=本App」=本 App 恢复动作；「系统勿扰」=系统 DND；其它=用户音量键或别的 App。")
+        if (trace.isEmpty()) {
+            sb.appendLine("  （暂无事件：黑匣子运行中但未捕捉到铃声变化，说明期间没人改过铃声模式）")
+        } else {
+            trace.takeLast(20).forEach { sb.appendLine("  $it") }
+        }
+        sb.appendLine()
+
         // 2. 权限状态
         val listenerOn = isListenerEnabled(ctx)
         val postOn = hasPostNotificationPermission(ctx)
