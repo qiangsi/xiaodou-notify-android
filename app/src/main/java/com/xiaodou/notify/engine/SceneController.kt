@@ -80,7 +80,7 @@ object SceneController {
             }
         }
         prefs.sceneMode = mode
-        // v1.0.12：睡眠场景不再把整台手机设成静音。改为「睡眠静默」——
+        // v1.7.12：睡眠场景不再把整台手机设成静音。改为「睡眠静默」——
         // 只把到来的通知逐条静默消除（通知链路读 prefs.sleepSilence），系统铃声、来电、
         // 闹钟一律不碰。退出任意场景即关闭，绝无残留的全局静音状态。
         prefs.sleepSilence = (mode == SLEEP)

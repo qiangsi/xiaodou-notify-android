@@ -135,7 +135,7 @@ class NotificationMonitorService : NotificationListenerService() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        // v1.0.12：不再有全局静音状态需要恢复（本 App 从不改系统铃声）
+        // v1.7.12：不再有全局静音状态需要恢复（本 App 从不改系统铃声）
     }
 
     override fun onDestroy() {
@@ -269,7 +269,7 @@ class NotificationMonitorService : NotificationListenerService() {
 
             if (excludedNoFilter) return@launch // 排除档位2：记录不过滤
 
-            // v1.0.12 睡眠场景静默：只把这条通知从通知栏静默消除，不改系统铃声。
+            // v1.7.12 睡眠场景静默：只把这条通知从通知栏静默消除，不改系统铃声。
             // 必须放在 filterPaused 之前（睡眠场景同时开着暂停过滤）；VIP 守护词已在上方穿透。
             // 验证码/来电/媒体/常驻一律豁免，永不静默。
             if (app.prefs.sleepSilence && category !in setOf("code", "call", "media", "ongoing")) {

@@ -265,6 +265,15 @@ class SettingsFragment : Fragment() {
             ActionExecutor.unmute(requireContext(), prefs)
             Toast.makeText(requireContext(), R.string.settings_unmuted, Toast.LENGTH_SHORT).show()
         }
+        // v1.7.13：修复旧版遗留的全局静音——用户显式点击才恢复铃声，不影响智能静音判定
+        binding.btnRestoreRinger.setOnClickListener {
+            val changed = com.xiaodou.notify.engine.LegacyMuteMigrator.restoreRingerManually(requireContext(), prefs)
+            Toast.makeText(
+                requireContext(),
+                if (changed != null) R.string.settings_restore_ringer_done else R.string.settings_restore_ringer_none,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         binding.btnExport.setOnClickListener {
             // FR-H6 + v1.5.0 Pro：免费版限近 7 / 30 天，"全部"需 Pro

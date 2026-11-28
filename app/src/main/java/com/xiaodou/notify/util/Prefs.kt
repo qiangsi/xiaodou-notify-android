@@ -102,6 +102,15 @@ class Prefs(context: Context) {
         get() = sp.getString(KEY_MUTE_SOURCE, "") ?: ""
         set(value) = sp.edit().putString(KEY_MUTE_SOURCE, value).apply()
 
+    /**
+     * v1.7.13：旧版全局静音遗留状态是否已清理。
+     * v1.7.1~v1.7.11 曾把整台手机设为静音，v1.7.12 改成按条静默消除后遗留状态无人处理，
+     * 导致从旧版升级上来的手机一直停在静音。启动时做一次性恢复并置位，之后永不干预铃声。
+     */
+    var legacyMuteRecovered: Boolean
+        get() = sp.getBoolean(KEY_LEGACY_MUTE_RECOVERED, false)
+        set(value) = sp.edit().putBoolean(KEY_LEGACY_MUTE_RECOVERED, value).apply()
+
     // —— FR-E5 应用锁 ——
     var appLockEnabled: Boolean
         get() = sp.getBoolean(KEY_APP_LOCK, false)
@@ -245,7 +254,7 @@ class Prefs(context: Context) {
         set(value) = sp.edit().putBoolean(KEY_FILTER_PAUSED, value).apply()
 
     /**
-     * v1.0.12 睡眠场景静默：开启时把到来的通知逐条静默消除（不响铃不弹窗），
+     * v1.7.12 睡眠场景静默：开启时把到来的通知逐条静默消除（不响铃不弹窗），
      * 但绝不改动系统铃声模式，来电/闹钟/媒体一律不受影响。仅由睡眠场景置位，退出即清除。
      */
     var sleepSilence: Boolean
@@ -366,6 +375,7 @@ class Prefs(context: Context) {
         private const val KEY_MUTE_ORIGINAL_MODE = "mute_original_mode"
         private const val KEY_MUTE_UNTIL = "mute_until"
         private const val KEY_MUTE_SOURCE = "mute_source"
+        private const val KEY_LEGACY_MUTE_RECOVERED = "legacy_mute_recovered"
         private const val KEY_SLEEP_SILENCE = "sleep_silence"
         private const val KEY_APP_LOCK = "app_lock"
         private const val KEY_APP_LOCK_TIMEOUT = "app_lock_timeout_min"

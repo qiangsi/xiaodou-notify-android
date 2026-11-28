@@ -192,6 +192,9 @@
     <string name="settings_retain_days">历史保留 %1$d 天</string>
     <string name="settings_unlock_now">清空静音判定</string>
     <string name="settings_unmuted">已清空静音判定（本 App 从不改动手机铃声）</string>
+    <string name="settings_restore_ringer">恢复手机铃声（修复旧版遗留静音）</string>
+    <string name="settings_restore_ringer_done">已恢复手机铃声</string>
+    <string name="settings_restore_ringer_none">手机当前不是静音状态，无需恢复</string>
     <string name="settings_app_lock">应用锁</string>
     <string name="settings_app_lock_desc">进入应用需指纹/面容验证</string>
     <string name="settings_permission_lost">通知使用权似乎已被收回，点此重新开启</string>

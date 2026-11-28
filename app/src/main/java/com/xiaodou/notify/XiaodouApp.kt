@@ -32,6 +32,10 @@ class XiaodouApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        // v1.7.13：旧版全局静音遗留状态一次性收尾。必须在任何通知处理前完成，
+        // 把从 v1.7.1~v1.7.11 升级上来、仍停在静音的手机恢复为响铃并清除旧标记。
+        // 只执行一次，之后本 App 永不再写系统铃声。
+        com.xiaodou.notify.engine.LegacyMuteMigrator.migrateIfNeeded(this, prefs)
         // 性能打点：默认关闭；仅在诊断页手动打开过才启用，重启后按持久化状态恢复
         PerfTracer.enabled = prefs.perfTrace
         // FR-E6：深浅模式全局应用（配色由各 Activity 在 onCreate 前 setTheme）

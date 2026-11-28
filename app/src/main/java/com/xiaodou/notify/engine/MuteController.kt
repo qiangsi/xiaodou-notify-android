@@ -5,7 +5,7 @@ import android.media.AudioManager
 import com.xiaodou.notify.util.Prefs
 
 /**
- * 智能静音判定器（v1.0.12 重写）。
+ * 智能静音判定器（v1.7.12 重写）。
  *
  * 【设计原则】本模块绝不改动系统铃声模式（AudioManager.ringerMode）。
  * 旧实现把 ringerMode 设成 SILENT，等于把整台手机静音——所有 App 的通知、闹钟、

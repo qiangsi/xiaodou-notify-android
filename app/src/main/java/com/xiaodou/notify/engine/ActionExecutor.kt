@@ -49,7 +49,7 @@ object ActionExecutor {
             }
         }
         Actions.MUTE -> {
-            // v1.0.12：静音 = 静默消除这一条通知，绝不改系统铃声（否则整台手机被静音）。
+            // v1.7.12：静音 = 静默消除这一条通知，绝不改系统铃声（否则整台手机被静音）。
             // 与 DISMISS 同样的机制，但结果记为 RULE，文案区分「已静默消除」。
             val key = entity.sysKey
             if (key.isNullOrEmpty()) {
@@ -101,11 +101,11 @@ object ActionExecutor {
             tts = TextToSpeech(context) { status ->
                 if (status == TextToSpeech.SUCCESS) {
                     tts?.setLanguage(Locale.CHINA)
-                    tts?.speak("$title，$text", TextToSpeech.QUEUE_FLUSH, null, "maodou-tts")
+                    tts?.speak("$title，$text", TextToSpeech.QUEUE_FLUSH, null, "xiaodou-tts")
                 }
             }
         } else {
-            tts?.speak("$title，$text", TextToSpeech.QUEUE_FLUSH, null, "maodou-tts")
+            tts?.speak("$title，$text", TextToSpeech.QUEUE_FLUSH, null, "xiaodou-tts")
         }
         app.appScope.launch(Dispatchers.Main) { /* 保持引用 */ }
     }
@@ -115,7 +115,7 @@ object ActionExecutor {
         MuteController.shouldSmartMute(context, pkg, category, prefs)
 
     /**
-     * 兼容旧调用。v1.0.12 起不再有全局静音，此操作仅清空高频判定窗口，
+     * 兼容旧调用。v1.7.12 起不再有全局静音，此操作仅清空高频判定窗口，
      * 不影响系统铃声（系统铃声本就从未被本 App 改动）。
      */
     fun unmute(context: Context, prefs: Prefs) = MuteController.clearWindows()
